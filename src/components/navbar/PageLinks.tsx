@@ -9,10 +9,10 @@ export default function PageLinks({ columns }: PageLinksParams) {
   return (
     <SimpleGrid columns={columns} spacing={10}>
       <Center>
-        <Link>Explore</Link>
+        <Link>Browse</Link>
       </Center>
       <Center>
-        <Link>Generate</Link>
+        <Link>Generator</Link>
       </Center>
     </SimpleGrid>
   );
