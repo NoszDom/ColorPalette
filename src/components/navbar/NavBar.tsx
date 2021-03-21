@@ -9,7 +9,7 @@ export interface NavBarParams {
   columns: number;
 }
 
-export default function Navbar({ name, columns }: NavBarParams) {
+export default function NavBar({ name, columns }: NavBarParams) {
   return (
     <Flex h="55px" fontSize="xl" ml={5} mr={5}>
       <PageLinks columns={columns} />

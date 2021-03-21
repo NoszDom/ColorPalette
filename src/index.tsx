@@ -1,7 +1,7 @@
 import { ColorModeScript } from "@chakra-ui/react";
 import * as React from "react";
 import ReactDOM from "react-dom";
-import { GeneratorPage } from "./pages/GeneratorPage";
+import { App } from "./App";
 import reportWebVitals from "./reportWebVitals";
 import * as serviceWorker from "./serviceWorker";
 import "./index.css";
@@ -9,7 +9,7 @@ import "./index.css";
 ReactDOM.render(
   <React.StrictMode>
     <ColorModeScript />
-    <GeneratorPage />
+    <App/>
   </React.StrictMode>,
   document.getElementById("root")
 );

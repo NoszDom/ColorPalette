@@ -1,21 +1,27 @@
 import * as React from "react";
 import { Flex } from "@chakra-ui/react";
-import ColorPanel from "../common/ColorPanel";
+import ColorPanel from "./ColorPanel";
 
 export interface ColorPaletteParams {
   colors: string[];
   height: string;
+  fontSize: string;
 }
 
-export default function ColorPalette({ colors, height }: ColorPaletteParams) {
-  
+export default function ColorPalette({
+  colors,
+  height,
+  fontSize,
+}: ColorPaletteParams) {
   const h: number = 100;
   const w: number = 100 / colors.length;
 
   return (
     <Flex w="100%" bg="tomato" h={height}>
-      {colors.map((value, index) => {
-        return <ColorPanel color={value} height={h} width={w} />;
+      {colors.map((value : string) => {
+        return (
+          <ColorPanel color={value} height={h} width={w} fontSize={fontSize} />
+        );
       })}
     </Flex>
   );
