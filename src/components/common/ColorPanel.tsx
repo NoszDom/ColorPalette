@@ -1,13 +1,27 @@
 import * as React from "react";
-import { Center, Heading } from "@chakra-ui/react";
+import {
+  Center,
+  Heading,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverHeader,
+  PopoverBody,
+  PopoverArrow,
+  PopoverCloseButton,
+  IconButton,
+  VStack,
+} from "@chakra-ui/react";
 import hexRgb from "hex-rgb";
-import axios from "axios";
+import { ChromePicker } from "react-color";
+import { CgColorPicker } from "react-icons/cg";
 
 export interface ColorPanelParams {
   color: string;
   width: number;
   height: number;
   fontSize: string;
+  editable?: boolean;
 }
 
 export default function ColorPanel({
@@ -15,16 +29,22 @@ export default function ColorPanel({
   width,
   height,
   fontSize,
+  editable,
 }: ColorPanelParams) {
   const widthString: string = width.toString() + "%";
   const heightString: string = height.toString() + "%";
-  const textColor: string = isTextBlack(color) ? "#000000" : "#ffffff";
+  const textColor: string = isTextBlack(color) ? "black" : "white";
+
+  const colorPicker = editable ? colorPick(textColor, color) : <span></span>;
 
   return (
     <Center w={widthString} h={heightString} bg={color}>
-      <Heading color={textColor} size={fontSize}>
+      <VStack>
+       <Heading color={textColor} size={fontSize}>
         {color}
-      </Heading>
+        </Heading>
+        {colorPicker}
+      </VStack>
     </Center>
   );
 }
@@ -42,6 +62,32 @@ function isTextBlack(color: string) {
       ? true
       : false;
   return result;
+}
+
+function colorPick(textColor: string, color : string) {
+  return (
+    <Popover>
+      <PopoverTrigger>
+        <IconButton
+          color={textColor}
+          icon={<CgColorPicker />}
+          variant="ghost"
+          aria-label="Pick color"
+          fontSize="2xl"
+        />
+      </PopoverTrigger>
+      <PopoverContent color="white">
+        <PopoverHeader pt={4} fontWeight="bold" border="0">
+          Pick a color
+        </PopoverHeader>
+        <PopoverArrow />
+        <PopoverCloseButton />
+        <PopoverBody>
+          <ChromePicker color ={color}/>
+        </PopoverBody>
+      </PopoverContent>
+    </Popover>
+  );
 }
 
 function calculateLuminanceComponent(color: number) {

@@ -7,12 +7,18 @@ export interface FooterParams {
   height: string;
   isOwn: boolean;
   isSaved?: boolean;
+  title: string;
+  creatorID: number;
+  saves?: number;
 }
 
 export default function PaletteFooter({
   height,
   isOwn,
   isSaved,
+  title,
+  creatorID,
+  saves,
 }: FooterParams) {
   const button = isOwn ? (
     <IconButton
@@ -32,13 +38,17 @@ export default function PaletteFooter({
 
   return (
     <Tooltip
-      label={["13013 saves", <br/>,"Made by Some One"]}
+      label={[
+        saves + " saves",
+        <br key="enter" />,
+        "Made by " + creatorID
+      ]}
       shouldWrapChildren
       w="300"
       placement="bottom-start"
     >
       <Flex h={height} align="center" ml={3} mr={2} overflow="hidden">
-        <Heading size="sm">Paletta neve</Heading>
+        <Heading size="sm">{title}</Heading>
         <Spacer />
         {button}
       </Flex>

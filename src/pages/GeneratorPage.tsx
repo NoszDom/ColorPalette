@@ -19,6 +19,7 @@ export default function GeneratorPage() {
         colors={testColors}
         height="calc(100% - 55px)"
         fontSize="xl"
+        editable={true}
       />
     </Box>
   );

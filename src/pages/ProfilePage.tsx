@@ -2,22 +2,19 @@ import * as React from "react";
 import { Box } from "@chakra-ui/react";
 import ProfilHeader from "../components/profile/ProfileHeader";
 import PaletteLibrary from "../components/profile/PaletteLibrary";
+import { ColorPalette, User } from "../App"
 
-const testColors: Array<string> = [
-  "#000000",
-  "#ff0000",
-  "#0000ff",
-  "#00ff00",
-  "#f0f000",
-];
+export interface ProfileParams{
+  name : string;
+  madePalettes : Array<ColorPalette>;
+  savedPalettes :  Array<ColorPalette>;
+}
 
-const test : Array<Array<string>> = [testColors, testColors, testColors]
-
-export default function ProfilePage(){
+export default function ProfilePage({name, madePalettes, savedPalettes} : ProfileParams){
     return (
       <Box w="100%" h = "calc(100% - 56px)" overflowY = "auto">
-        <ProfilHeader name = "Lorem Ipsum"/>
-        <PaletteLibrary madePalettes={test} savedPalettes={test}/>
+        <ProfilHeader name = {name}/>
+        <PaletteLibrary madePalettes={madePalettes} savedPalettes={savedPalettes}/>
       </Box>
     );
-  }
+}

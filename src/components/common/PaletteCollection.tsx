@@ -1,24 +1,20 @@
 import * as React from "react";
 import { Wrap, WrapItem } from "@chakra-ui/react";
 import PaletteCard from "./PaletteCard";
+import { ColorPalette } from "../../App"
+
 
 export interface PaletteCollectionParams {
-  paletteArray: Array<Array<string>>;
-  isOwn: boolean;
-  isSaved? : boolean;
+  paletteArray: Array<ColorPalette>;
 }
 
-export default function PaletteCollection({
-  isOwn,
-  isSaved,
-  paletteArray,
-}: PaletteCollectionParams) {
+export default function PaletteCollection({ paletteArray }: PaletteCollectionParams) {
   return (
     <Wrap spacing="30px" justify="center">
-      {paletteArray.map((subArray: Array<string>) => {
+      {paletteArray.map((palette: ColorPalette, index : number) => {
         return (
-          <WrapItem>
-            <PaletteCard colors={subArray} isOwn={isOwn} isSaved = {isSaved}/>
+          <WrapItem key = {index}>
+            <PaletteCard palette={palette}/>
           </WrapItem>
         );
       })}

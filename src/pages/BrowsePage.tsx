@@ -1,21 +1,17 @@
 import * as React from "react";
 import { Box } from "@chakra-ui/react";
 import PaletteCollection from "../components/common/PaletteCollection"
+import { ColorPalette } from "../App"
 
-const testColors: Array<string> = [
-  "#000000",
-  "#ff0000",
-  "#0000ff",
-  "#00ff00",
-  "#f0f000",
-];
+export interface BrowseParams{
+  palettes : Array<ColorPalette>;
+  userID : number;
+}
 
-const test : Array<Array<string>> = [testColors, testColors, testColors, testColors, testColors, testColors, testColors, testColors, testColors]
-
-export default function BrowsePage(){
+export default function BrowsePage( {palettes, userID} : BrowseParams ){
     return (
       <Box w="100%" h = "calc(100% - 56px)" overflowY = "auto" overflowX="hidden" p={7}>
-          <PaletteCollection isOwn={false} isSaved={false} paletteArray={test}/>
+          <PaletteCollection paletteArray ={palettes}/>
       </Box>
     );
   }

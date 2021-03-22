@@ -7,11 +7,12 @@ import {
   AccordionIcon,
   Heading,
 } from "@chakra-ui/react";
-import PaletteCollection from "../common/PaletteCollection"
+import PaletteCollection from "../common/PaletteCollection";
+import { ColorPalette } from "../../App"
 
 export interface PaletteLibraryParams {
-  madePalettes: Array<Array<string>>;
-  savedPalettes: Array<Array<string>>;
+  madePalettes: Array<ColorPalette>;
+  savedPalettes: Array<ColorPalette>;
 }
 
 export default function PaletteLibrary({madePalettes, savedPalettes} : PaletteLibraryParams) {
@@ -24,7 +25,7 @@ export default function PaletteLibrary({madePalettes, savedPalettes} : PaletteLi
             <AccordionIcon />
           </AccordionButton>
           <AccordionPanel mt={2} mb={2}>
-              <PaletteCollection paletteArray={madePalettes} isOwn = {true}/>
+              <PaletteCollection paletteArray={madePalettes}/>
           </AccordionPanel>
       </AccordionItem>
       <AccordionItem>
@@ -33,7 +34,7 @@ export default function PaletteLibrary({madePalettes, savedPalettes} : PaletteLi
             <AccordionIcon />
           </AccordionButton>
           <AccordionPanel>
-            <PaletteCollection paletteArray={savedPalettes} isOwn = {false} isSaved = {true}/>
+            <PaletteCollection paletteArray={savedPalettes}/>
           </AccordionPanel>
       </AccordionItem>
     </Accordion>
