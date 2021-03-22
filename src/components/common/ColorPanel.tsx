@@ -2,19 +2,10 @@ import * as React from "react";
 import {
   Center,
   Heading,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverHeader,
-  PopoverBody,
-  PopoverArrow,
-  PopoverCloseButton,
-  IconButton,
   VStack,
 } from "@chakra-ui/react";
 import hexRgb from "hex-rgb";
-import { ChromePicker } from "react-color";
-import { CgColorPicker } from "react-icons/cg";
+import ColorPickerPopUp from "./ColorPickerPopUp";
 
 export interface ColorPanelParams {
   color: string;
@@ -35,7 +26,7 @@ export default function ColorPanel({
   const heightString: string = height.toString() + "%";
   const textColor: string = isTextBlack(color) ? "black" : "white";
 
-  const colorPicker = editable ? colorPick(textColor, color) : <span></span>;
+  const colorPicker = editable ? ColorPickerPopUp({textColor : textColor, color : color}) : <span></span>;
 
   return (
     <Center w={widthString} h={heightString} bg={color}>
@@ -64,31 +55,7 @@ function isTextBlack(color: string) {
   return result;
 }
 
-function colorPick(textColor: string, color : string) {
-  return (
-    <Popover>
-      <PopoverTrigger>
-        <IconButton
-          color={textColor}
-          icon={<CgColorPicker />}
-          variant="ghost"
-          aria-label="Pick color"
-          fontSize="2xl"
-        />
-      </PopoverTrigger>
-      <PopoverContent color="white">
-        <PopoverHeader pt={4} fontWeight="bold" border="0">
-          Pick a color
-        </PopoverHeader>
-        <PopoverArrow />
-        <PopoverCloseButton />
-        <PopoverBody>
-          <ChromePicker color ={color}/>
-        </PopoverBody>
-      </PopoverContent>
-    </Popover>
-  );
-}
+
 
 function calculateLuminanceComponent(color: number) {
   const result: number =

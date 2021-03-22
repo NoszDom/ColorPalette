@@ -20,6 +20,7 @@
     "hex-rgb": "^4.2.0",
     "react": "^17.0.1",
     "react-color": "^2.19.3",
+    "react-color-palette": "^3.1.0",
     "react-dom": "^17.0.1",
     "react-icons": "^3.11.0",
     "react-router-dom": "^5.2.0",

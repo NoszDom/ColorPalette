@@ -4,7 +4,7 @@ import {
   theme,
   Divider,
   Center,
-  Spinner
+  Spinner,
 } from "@chakra-ui/react";
 import GeneratorPage from "./pages/GeneratorPage";
 import ProfilePage from "./pages/ProfilePage";
@@ -16,7 +16,7 @@ import Axios from "axios";
 export interface User {
   id: number;
   name: string;
-};
+}
 
 export interface ColorPalette {
   id: number;
@@ -25,8 +25,7 @@ export interface ColorPalette {
   creatorID: number;
   saves?: number;
   savedByCurrentUser?: boolean;
-};
-
+}
 
 const testColors: Array<string> = [
   "#ffffff",
@@ -36,44 +35,63 @@ const testColors: Array<string> = [
   "#00ff00",
 ];
 
-const dummyPalette1 : ColorPalette = {
-  id :  1,
-  name : "string",
-  colors : testColors,
-  creatorID : 0,
-  saves : 12,
-}
+const dummyPalette1: ColorPalette = {
+  id: 1,
+  name: "string",
+  colors: testColors,
+  creatorID: 0,
+  saves: 12,
+};
 
-const dummyPalette2 : ColorPalette = {
-  id :  2,
-  name : "ez másé",
-  colors : testColors,
-  creatorID :  1,
-  saves : 120,
-  savedByCurrentUser : true
-}
+const dummyPalette2: ColorPalette = {
+  id: 2,
+  name: "ez másé",
+  colors: testColors,
+  creatorID: 1,
+  saves: 120,
+  savedByCurrentUser: true,
+};
 
-const dummyPalette3 : ColorPalette = {
-  id :  3,
-  name :"ez nincs mentve",
-  colors : testColors,
-  creatorID : 1,
-  saves :1234,
-  savedByCurrentUser : false
-}
+const dummyPalette3: ColorPalette = {
+  id: 3,
+  name: "ez nincs mentve",
+  colors: testColors,
+  creatorID: 1,
+  saves: 1234,
+  savedByCurrentUser: false,
+};
 
 export default function App() {
-  const [colorPalettes, setColorPalettes] = React.useState<
-    Array<ColorPalette>
-  >([dummyPalette1, dummyPalette2, dummyPalette3]);
+  const [colorPalettes, setColorPalettes] = React.useState<Array<ColorPalette>>(
+    [dummyPalette1, dummyPalette2, dummyPalette3]
+  );
+
   const [currentUser, setCurrentUser] = React.useState<User>({
     id: 0,
     name: "Some One",
   });
 
-  const sortedPalettes : Array<Array<ColorPalette>> = sortOwn(colorPalettes, currentUser.id);
+  const [loadData, setLoadData] = React.useState<boolean>(true);
 
-  if (false ) {
+  const [sortedPalettes, setSortedPalettes] = React.useState<
+    Array<Array<ColorPalette>>
+  >(sortOwn(colorPalettes, currentUser.id));
+
+  React.useEffect(() => {
+    if (loadData)
+      loadPage({
+        loading: loadData,
+        setLoading: setLoadData,
+        user: currentUser,
+        setUser: setCurrentUser,
+        colorPalettes: colorPalettes,
+        setColorPalettes: setColorPalettes,
+        sortedPalettes: sortedPalettes,
+        setSortedPalettes: setSortedPalettes,
+      });
+  }, [loadData]);
+
+  if (loadData) {
     return (
       <ChakraProvider theme={theme}>
         <Center w="100%" h="100%">
@@ -89,13 +107,20 @@ export default function App() {
           <Divider />
           <Switch>
             <Route exact path="/">
-              <BrowsePage palettes = { sortedPalettes[1].concat(sortedPalettes[2]) } userID = {currentUser.id}/>
+              <BrowsePage
+                palettes={sortedPalettes[1].concat(sortedPalettes[2])}
+                userID={currentUser.id}
+              />
             </Route>
             <Route path="/generator">
-              <GeneratorPage/>
+              <GeneratorPage />
             </Route>
             <Route path="/myprofile">
-              <ProfilePage name = {currentUser.name} madePalettes = {sortedPalettes[0]} savedPalettes = {sortedPalettes[1]}/>
+              <ProfilePage
+                user={currentUser}
+                madePalettes={sortedPalettes[0]}
+                savedPalettes={sortedPalettes[1]}
+              />
             </Route>
           </Switch>
         </Router>
@@ -104,20 +129,77 @@ export default function App() {
   }
 }
 
-function sortOwn(array : Array<ColorPalette>, id: number){
-  const own = Array<ColorPalette>()
-  const saved = Array<ColorPalette>()
-  const notSaved = Array<ColorPalette>()
+interface loadPageParams {
+  loading: boolean;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  user: User;
+  setUser: React.Dispatch<React.SetStateAction<User>>;
+  colorPalettes: Array<ColorPalette>;
+  setColorPalettes: React.Dispatch<React.SetStateAction<Array<ColorPalette>>>;
+  sortedPalettes: Array<Array<ColorPalette>>;
+  setSortedPalettes: React.Dispatch<
+    React.SetStateAction<Array<Array<ColorPalette>>>
+  >;
+}
 
-  array.map((palette) =>{
-    if(palette.creatorID === id){
+async function loadPage({
+  loading,
+  setLoading,
+  user,
+  setUser,
+  colorPalettes,
+  setColorPalettes,
+  sortedPalettes,
+  setSortedPalettes,
+}: loadPageParams) {
+  if (loading === true) {
+    var callCount: number = 0;
+
+    callCount++;
+    Axios.get("https://localhost:44330/api/users/6").then((response) => {
+      //setUser(response.data);
+
+      //setSortedPalettes(sortOwn(colorPalettes, user.id));
+
+      callCount--;
+      if (callCount === 0) setLoading(false);
+      console.log(response.data);
+    });
+
+    callCount++;
+    Axios.get("https://localhost:44330/api/colorpalettes").then((response) => {
+      /*response.data.map((palette : ColorPalette) =>{
+        setColorPalettes([...colorPalettes, palette]);
+      });*/
+
+      //setSortedPalettes(sortOwn(colorPalettes, user.id));
+
+      callCount--;
+      if (callCount === 0) setLoading(false);
+      console.log(response.data);
+    });
+
+    callCount++;
+    Axios.get("https://localhost:44330/api/saves").then((response) => {
+      callCount--;
+      if (callCount === 0) setLoading(false);
+      console.log(response.data);
+    });
+  }
+}
+
+function sortOwn(array: Array<ColorPalette>, id: number) {
+  const own = Array<ColorPalette>();
+  const saved = Array<ColorPalette>();
+  const notSaved = Array<ColorPalette>();
+
+  array.map((palette) => {
+    if (palette.creatorID === id) {
       own.push(palette);
-    }
-    else{
-      if (palette.savedByCurrentUser){
+    } else {
+      if (palette.savedByCurrentUser) {
         saved.push(palette);
-      }
-      else{
+      } else {
         notSaved.push(palette);
       }
     }
@@ -125,35 +207,3 @@ function sortOwn(array : Array<ColorPalette>, id: number){
 
   return [own, saved, notSaved];
 }
-
-/*async function loadPage() {
-  if (loading === 0){
-  setLoading(1)
-  var callCount: number = 0;
-
-  callCount++;
-  Axios.get("https://localhost:44330/api/users/6").then((response) => {
-    callCount--;
-    setCurrentUser(response.data);
-    if (callCount === 0) setLoading(2);
-    console.log(currentUser);
-  });
-
-  callCount++;
-  Axios.get("https://localhost:44330/api/colorpalettes").then((response) => {
-    callCount--;
-    if (callCount === 0) setLoading(2);
-    response.data.map((palette : ColorPalette) =>
-      setColorPalettes([...colorPalettes, palette])
-    );
-    console.log(colorPalettes);
-  });
-
-  callCount++;
-  Axios.get("https://localhost:44330/api/saves").then((response) => {
-    callCount--;
-    if (callCount === 0) setLoading(false);
-    //console.log(response.data);
-  });
-}
-}*/
