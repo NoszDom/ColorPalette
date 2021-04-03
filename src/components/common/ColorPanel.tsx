@@ -26,7 +26,7 @@ export default function ColorPanel({
   const heightString: string = height.toString() + "%";
   const textColor: string = isTextBlack(color) ? "black" : "white";
 
-  const colorPicker = editable ? ColorPickerPopUp({textColor : textColor, color : color}) : <span></span>;
+  const colorPicker = editable ? ColorPickerPopUp({textColor : textColor, color : color}) : null;
 
   return (
     <Center w={widthString} h={heightString} bg={color}>
