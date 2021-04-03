@@ -1,38 +1,40 @@
 import * as React from "react";
-import {
-  Center,
-  Heading,
-  VStack,
-} from "@chakra-ui/react";
+import { Center, Heading, VStack } from "@chakra-ui/react";
 import hexRgb from "hex-rgb";
 import ColorPickerPopUp from "./ColorPickerPopUp";
 
 export interface ColorPanelParams {
-  color: string;
+  colors: Array<string>;
+  index: number;
   width: number;
   height: number;
   fontSize: string;
   editable?: boolean;
+  setColors?: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 export default function ColorPanel({
-  color,
+  colors,
+  index,
   width,
   height,
   fontSize,
   editable,
+  setColors,
 }: ColorPanelParams) {
   const widthString: string = width.toString() + "%";
   const heightString: string = height.toString() + "%";
-  const textColor: string = isTextBlack(color) ? "black" : "white";
+  const textColor: string = isTextBlack(colors[index]) ? "black" : "white";
 
-  const colorPicker = editable ? ColorPickerPopUp({textColor : textColor, color : color}) : null;
+  const colorPicker = editable
+    ? ColorPickerPopUp({ textColor: textColor, colors: colors, setColors: setColors, index: index })
+    : null;
 
   return (
-    <Center w={widthString} h={heightString} bg={color}>
+    <Center w={widthString} h={heightString} bg={colors[index]}>
       <VStack>
-       <Heading color={textColor} size={fontSize}>
-        {color}
+        <Heading color={textColor} size={fontSize}>
+          {colors[index]}
         </Heading>
         {colorPicker}
       </VStack>
@@ -54,8 +56,6 @@ function isTextBlack(color: string) {
       : false;
   return result;
 }
-
-
 
 function calculateLuminanceComponent(color: number) {
   const result: number =

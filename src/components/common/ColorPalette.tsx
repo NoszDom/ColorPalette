@@ -7,22 +7,33 @@ export interface ColorPaletteParams {
   height: string;
   fontSize: string;
   editable?: boolean;
+  setColors?: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 export default function ColorPalette({
   colors,
   height,
   fontSize,
-  editable
+  editable,
+  setColors,
 }: ColorPaletteParams) {
   const h: number = 100;
   const w: number = 100 / colors.length;
 
   return (
-    <Flex w="100%" bg="tomato" h={height}>
-      {colors.map((value : string, index : number) => {
+    <Flex w="100%" h={height}>
+      {colors.map((value: string, index: number) => {
         return (
-          <ColorPanel color={value} height={h} width={w} fontSize={fontSize} key={index} editable={editable}/>
+          <ColorPanel
+            colors={colors}
+            index={index}
+            height={h}
+            width={w}
+            fontSize={fontSize}
+            key={index}
+            editable={editable}
+            setColors={setColors}
+          />
         );
       })}
     </Flex>

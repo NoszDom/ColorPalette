@@ -18,29 +18,45 @@ import {
   PopoverContent,
   PopoverArrow,
   PopoverCloseButton,
-  ButtonGroup,
   Stack,
   HStack,
   PopoverHeader,
   Flex,
   Spacer,
-  InputGroup,
   Input,
-  InputLeftAddon,
 } from "@chakra-ui/react";
 import { CgColorPicker } from "react-icons/cg";
+import hexRgb from "hex-rgb";
+import rgbHex from "rgb-hex";
+import hexColorRegex from "hex-color-regex";
 
 export interface ColorPickerParams {
   textColor: string;
-  color: string;
+  colors: Array<string>;
+  setColors?: React.Dispatch<React.SetStateAction<string[]>>;
+  index: number;
 }
 
 export default function ColorPickerPopUp({
   textColor,
-  color,
+  colors,
+  setColors,
+  index,
 }: ColorPickerParams) {
+  const [rgb, setRgb] = React.useState<Array<number>>(
+    hexRgb(colors[index], { format: "array" })
+  );
+  const[hex, setHex] = React.useState<string>(colors[index]);
+
+  function rgbChanged() {
+    const tmp = colors;
+    tmp[index] = "#" + rgbHex(rgb[0], rgb[1], rgb[2]);
+    setColors!(tmp);
+    setHex(colors[index]);
+  }
+
   return (
-    <Popover closeOnBlur={false}>
+    <Popover>
       <PopoverTrigger>
         <IconButton
           aria-label="Pick a color"
@@ -60,7 +76,16 @@ export default function ColorPickerPopUp({
             <Flex alignItems="center">
               <Text fontWeight="bold">Red</Text>
               <Spacer />
-              <NumberInput min={0} max={255} size="sm">
+              <NumberInput
+                value={rgb[0]}
+                min={0}
+                max={255}
+                size="sm"
+                onChange={(value) => {
+                  setRgb([+value, rgb[1], rgb[2]]);
+                  rgbChanged();
+                }}
+              >
                 <NumberInputField width="75px" />
                 <NumberInputStepper>
                   <NumberIncrementStepper />
@@ -70,10 +95,14 @@ export default function ColorPickerPopUp({
             </Flex>
             <Slider
               aria-label="slider-red"
-              defaultValue={30}
+              value={rgb[0]}
               min={0}
               max={255}
               step={1}
+              onChange={(value) => {
+                setRgb([+value, rgb[1], rgb[2]]);
+                rgbChanged();
+              }}
             >
               <SliderTrack h="12px" bgGradient="linear(to-r, #000000, #ff0000)">
                 <SliderFilledTrack bgColor="transparent" />
@@ -84,7 +113,16 @@ export default function ColorPickerPopUp({
             <Flex alignItems="center">
               <Text fontWeight="bold">Green</Text>
               <Spacer />
-              <NumberInput min={0} max={255} size="sm">
+              <NumberInput
+                value={rgb[1]}
+                min={0}
+                max={255}
+                size="sm"
+                onChange={(value) => {
+                  setRgb([rgb[0], +value, rgb[2]]);
+                  rgbChanged();
+                }}
+              >
                 <NumberInputField width="75px" />
                 <NumberInputStepper>
                   <NumberIncrementStepper />
@@ -94,10 +132,14 @@ export default function ColorPickerPopUp({
             </Flex>
             <Slider
               aria-label="slider-green"
-              defaultValue={30}
+              value={rgb[1]}
               min={0}
               max={255}
               step={1}
+              onChange={(value) => {
+                setRgb([rgb[0], +value, rgb[2]]);
+                rgbChanged();
+              }}
             >
               <SliderTrack h="12px" bgGradient="linear(to-r, #000000, #00ff00)">
                 <SliderFilledTrack bgColor="transparent" />
@@ -108,7 +150,16 @@ export default function ColorPickerPopUp({
             <Flex alignItems="center">
               <Text fontWeight="bold">Blue</Text>
               <Spacer />
-              <NumberInput min={0} max={255} size="sm">
+              <NumberInput
+                value={rgb[2]}
+                min={0}
+                max={255}
+                size="sm"
+                onChange={(value) => {
+                  setRgb([rgb[0], rgb[1], +value]);
+                  rgbChanged();
+                }}
+              >
                 <NumberInputField width="75px" />
                 <NumberInputStepper>
                   <NumberIncrementStepper />
@@ -118,10 +169,14 @@ export default function ColorPickerPopUp({
             </Flex>
             <Slider
               aria-label="slider-blue"
-              defaultValue={30}
+              value={rgb[2]}
               min={0}
               max={255}
               step={1}
+              onChange={(value) => {
+                setRgb([rgb[0], rgb[1], +value]);
+                rgbChanged();
+              }}
             >
               <SliderTrack h="12px" bgGradient="linear(to-r, #000000, #0000ff)">
                 <SliderFilledTrack bgColor="transparent" />
@@ -131,18 +186,24 @@ export default function ColorPickerPopUp({
 
             <HStack spacing={6}>
               <Text fontWeight="bold">HEX</Text>
-              <InputGroup size="sm">
-                <InputLeftAddon>#</InputLeftAddon>
-                <Input w ="75px"/>
-              </InputGroup>
-            </HStack>
+              <Input
+                id="hexInput"
+                w="80px"
+                size="sm"
+                maxLength={7}
+                value={hex}
+                onChange={(e) => {
+                  setHex(e.target.value);
+                  if (hexColorRegex({strict: true}).test(e.target.value)){
+                    const tmp = colors;
+                    tmp[index] = e.target.value;
+                    setColors!(tmp);
+                  }
+                }}
+                onBlur={() => setHex(colors[index])}
+              />
 
-            <ButtonGroup display="flex" justifyContent="flex-end">
-              <Button variant="ghost" colorScheme="purple">
-                Cancel
-              </Button>
-              <Button colorScheme="purple">Ok</Button>
-            </ButtonGroup>
+            </HStack>
           </Stack>
         </Box>
       </PopoverContent>
