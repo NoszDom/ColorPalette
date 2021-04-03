@@ -10,7 +10,7 @@ import GeneratorPage from "./pages/GeneratorPage";
 import ProfilePage from "./pages/ProfilePage";
 import BrowsePage from "./pages/BrowsePage";
 import NavBar from "./components/navbar/NavBar";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 import Axios from "axios";
 
 export interface User {
@@ -91,7 +91,7 @@ export default function App() {
       });
   }, [loadData]);
 
-  if (loadData) {
+  if (false) {
     return (
       <ChakraProvider theme={theme}>
         <Center w="100%" h="100%">
@@ -103,19 +103,34 @@ export default function App() {
     return (
       <ChakraProvider theme={theme}>
         <Router>
-          <NavBar name={currentUser.name} columns={2} />
+          <NavBar name={currentUser.name} columns={4} />
           <Divider />
           <Switch>
             <Route exact path="/">
+              <Redirect to="/generator" />
+            </Route>
+            <Route exact path="/generator">
+              <GeneratorPage />
+            </Route>
+            <Route exact path="/browse">
               <BrowsePage
-                palettes={sortedPalettes[1].concat(sortedPalettes[2])}
+                palettes={sortedPalettes[2]}
                 userID={currentUser.id}
               />
             </Route>
-            <Route path="/generator">
-              <GeneratorPage />
+            <Route exact path="/saved">
+              <BrowsePage
+                palettes={sortedPalettes[1]}
+                userID={currentUser.id}
+              />
             </Route>
-            <Route path="/myprofile">
+            <Route exact path="/own">
+              <BrowsePage
+                palettes={sortedPalettes[0]}
+                userID={currentUser.id}
+              />
+            </Route>
+            <Route exact path="/myprofile">
               <ProfilePage
                 user={currentUser}
                 madePalettes={sortedPalettes[0]}
