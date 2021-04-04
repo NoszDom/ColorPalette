@@ -1,7 +1,6 @@
 import * as React from "react";
 import {
   IconButton,
-  Box,
   Slider,
   NumberInput,
   NumberInputField,
@@ -12,8 +11,8 @@ import {
   SliderTrack,
   SliderFilledTrack,
   SliderThumb,
-  Button,
   Popover,
+  PopoverBody,
   PopoverTrigger,
   PopoverContent,
   PopoverArrow,
@@ -46,7 +45,7 @@ export default function ColorPickerPopUp({
   const [rgb, setRgb] = React.useState<Array<number>>(
     hexRgb(colors[index], { format: "array" })
   );
-  const[hex, setHex] = React.useState<string>(colors[index]);
+  const [hex, setHex] = React.useState<string>(colors[index]);
 
   function rgbChanged() {
     const tmp = colors;
@@ -68,10 +67,10 @@ export default function ColorPickerPopUp({
         />
       </PopoverTrigger>
       <PopoverContent>
-        <PopoverHeader fontWeight="bold">Pick a color!</PopoverHeader>
         <PopoverArrow />
         <PopoverCloseButton />
-        <Box padding="10px">
+        <PopoverHeader fontWeight="bold">Pick a color!</PopoverHeader>
+        <PopoverBody pr="20px" pl="20px">
           <Stack>
             <Flex alignItems="center">
               <Text fontWeight="bold">Red</Text>
@@ -194,7 +193,11 @@ export default function ColorPickerPopUp({
                 value={hex}
                 onChange={(e) => {
                   setHex(e.target.value);
-                  if (hexColorRegex({strict: true}).test(e.target.value)){
+                  if (
+                    (e.target.value.length === 4 ||
+                      e.target.value.length === 7) &&
+                    hexColorRegex({ strict: true }).test(e.target.value)
+                  ) {
                     const tmp = colors;
                     tmp[index] = e.target.value;
                     setColors!(tmp);
@@ -202,10 +205,9 @@ export default function ColorPickerPopUp({
                 }}
                 onBlur={() => setHex(colors[index])}
               />
-
             </HStack>
           </Stack>
-        </Box>
+        </PopoverBody>
       </PopoverContent>
     </Popover>
   );

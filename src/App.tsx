@@ -16,6 +16,7 @@ import Axios from "axios";
 export interface User {
   id: number;
   name: string;
+  email: string;
 }
 
 export interface ColorPalette {
@@ -69,6 +70,7 @@ export default function App() {
   const [currentUser, setCurrentUser] = React.useState<User>({
     id: 0,
     name: "Some One",
+    email: "example@mail.com"
   });
 
   const [loadData, setLoadData] = React.useState<boolean>(true);
@@ -133,8 +135,7 @@ export default function App() {
             <Route exact path="/myprofile">
               <ProfilePage
                 user={currentUser}
-                madePalettes={sortedPalettes[0]}
-                savedPalettes={sortedPalettes[1]}
+                setUser={setCurrentUser}
               />
             </Route>
           </Switch>
