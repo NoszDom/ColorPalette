@@ -6,15 +6,16 @@ import { ColorPalette } from "../../App"
 
 export interface PaletteCollectionParams {
   paletteArray: Array<ColorPalette>;
+  userId: number;
 }
 
-export default function PaletteCollection({ paletteArray }: PaletteCollectionParams) {
+export default function PaletteCollection({ paletteArray, userId }: PaletteCollectionParams) {
   return (
     <Wrap spacing="30px" justify="center">
       {paletteArray.map((palette: ColorPalette, index : number) => {
         return (
           <WrapItem key = {index}>
-            <PaletteCard palette={palette}/>
+            <PaletteCard palette={palette} userId = {userId}/>
           </WrapItem>
         );
       })}

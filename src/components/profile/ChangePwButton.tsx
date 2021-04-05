@@ -72,7 +72,7 @@ export default function ChagePwButton() {
           <ModalBody>
             <Stack spacing={4}>
               <FormControl>
-                <FormLabel htmlFor="first-name">Old password:</FormLabel>
+                <FormLabel htmlFor="old-pw">Old password:</FormLabel>
                 <Input
                   ref={React.useRef(null)}
                   id="old-pw"

@@ -6,9 +6,10 @@ import { ColorPalette as Palette } from "../../App";
 
 export interface PaletteCardParams {
   palette: Palette;
+  userId: number;
 }
 
-export default function PaletteCard({ palette }: PaletteCardParams) {
+export default function PaletteCard({ palette, userId }: PaletteCardParams) {
   return (
     <Box w="300px" h="200px" borderRadius="xl" border="1px" overflow="hidden">
       <ColorPalette
@@ -19,11 +20,11 @@ export default function PaletteCard({ palette }: PaletteCardParams) {
       <Divider />
       <PaletteFooter
         height="35px"
-        isOwn={palette.creatorID === 0}
+        isOwn={palette.creatorId === userId}
         isSaved={palette.savedByCurrentUser}
         title={palette.name}
         saves={palette.saves}
-        creatorID={palette.creatorID}
+        creatorID={palette.creatorId}
       />
     </Box>
   );

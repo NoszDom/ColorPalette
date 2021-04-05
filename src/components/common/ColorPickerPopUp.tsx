@@ -186,7 +186,6 @@ export default function ColorPickerPopUp({
             <HStack spacing={6}>
               <Text fontWeight="bold">HEX</Text>
               <Input
-                id="hexInput"
                 w="80px"
                 size="sm"
                 maxLength={7}

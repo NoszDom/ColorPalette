@@ -1,17 +1,83 @@
 import * as React from "react";
-import { Box } from "@chakra-ui/react";
-import PaletteCollection from "../components/common/PaletteCollection"
-import { ColorPalette } from "../App"
+import { Box, Center, Spinner } from "@chakra-ui/react";
+import PaletteCollection from "../components/common/PaletteCollection";
+import { ColorPalette, JsonPalette } from "../App";
+import axios from "axios";
 
-export interface BrowseParams{
-  palettes : Array<ColorPalette>;
-  userID : number;
+export interface BrowseParams {
+  userId: number;
 }
 
-export default function BrowsePage( {palettes, userID} : BrowseParams ){
+export default function BrowsePage({ userId }: BrowseParams) {
+  const [loaded, setLoaded] = React.useState<boolean>(false);
+  const [palettes, setPalettes] = React.useState<Array<ColorPalette>>(
+    Array<ColorPalette>()
+  );
+
+  React.useEffect(() => {
+    getPalettes({
+      loaded: loaded,
+      setLoaded: setLoaded,
+      palettes: palettes,
+      setPalettes: setPalettes,
+      userId: userId,
+    });
+  }, [loaded]);
+
+  if (loaded) {
     return (
-      <Box w="100%" h = "calc(100% - 56px)" overflowY = "auto" overflowX="hidden" p={7}>
-          <PaletteCollection paletteArray ={palettes}/>
+      <Box
+        w="100%"
+        h="calc(100% - 56px)"
+        overflowY="auto"
+        overflowX="hidden"
+        p={7}
+      >
+        <PaletteCollection paletteArray={palettes} userId={userId}/>
       </Box>
     );
+  } else {
+    return (
+      <Center w="100%" h="calc(100% - 56px)">
+        <Spinner size="xl" />
+      </Center>
+    );
   }
+}
+
+interface getPalettesParams {
+  loaded: boolean;
+  setLoaded: React.Dispatch<React.SetStateAction<boolean>>;
+  palettes: Array<ColorPalette>;
+  setPalettes: React.Dispatch<React.SetStateAction<Array<ColorPalette>>>;
+  userId: number;
+}
+
+async function getPalettes({
+  loaded,
+  setLoaded,
+  palettes,
+  setPalettes,
+  userId,
+}: getPalettesParams) {
+  if (!loaded) {
+    axios
+      .get('https://localhost:44330/api/colorpalettes/'+userId+ '?creator='+ userId)
+      .then((response) => {
+        response.data.map((value: JsonPalette) => {
+          console.log(value.colors);
+          var palette = {
+            id: value.id,
+            name: value.name,
+            creatorId: value.creatorId,
+            creatorName: value.creatorName,
+            saves: value.saves,
+            savedByCurrentUser: value.savedByCurrentUser,
+            colors: JSON.parse(value.colors),
+          };
+          setPalettes((palettes) => [...palettes, palette]);
+        });
+        setLoaded(true);
+      });
+  }
+}
