@@ -16,15 +16,22 @@ import {
   Divider,
   useToast,
 } from "@chakra-ui/react";
+import axios from "axios";
+import { User } from "../../App";
 
-export default function ChagePwButton() {
+export interface PwButtonParams {
+  user: User;
+  setUser: React.Dispatch<React.SetStateAction<User>>;
+}
+
+export default function ChangePwButton({ user }: PwButtonParams) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [oldPw, setOldPw] = React.useState<string>("");
   const [newPw, setNewPw] = React.useState<string>("");
   const [newPwAg, setNewPwAg] = React.useState<string>("");
   const toast = useToast();
 
-  function saveNewPw() {
+  async function saveNewPw() {
     if (newPw === oldPw) {
       toast({
         title: "New password cannot be the same as the old one!",
@@ -39,12 +46,30 @@ export default function ChagePwButton() {
           isClosable: true,
         });
       } else {
-        toast({
-          title: "old password: " + oldPw + ", new password: " + newPw,
-          status: "success",
-          isClosable: true,
-        });
-        onClose();
+        axios
+          .put("https://localhost:44330/api/users/edit/password", {
+            id: user.id,
+            oldPassword: oldPw,
+            newPassword: newPw,
+          })
+          .then(() => {
+            toast({
+              title: "Password changed successfully!",
+              status: "success",
+              isClosable: true,
+            });
+            onClose();
+            setOldPw("");
+            setNewPw("");
+            setNewPwAg("");
+          })
+          .catch((error) =>
+            toast({
+              title: "Current password does not match!",
+              status: "error",
+              isClosable: true,
+            })
+          );
       }
     }
   }
@@ -72,7 +97,7 @@ export default function ChagePwButton() {
           <ModalBody>
             <Stack spacing={4}>
               <FormControl>
-                <FormLabel htmlFor="old-pw">Old password:</FormLabel>
+                <FormLabel htmlFor="old-pw">Current password:</FormLabel>
                 <Input
                   ref={React.useRef(null)}
                   id="old-pw"

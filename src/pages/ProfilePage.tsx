@@ -56,7 +56,7 @@ export default function ProfilePage({ user, setUser }: ProfileParams) {
             <ChangeEmailButton user={user} setUser={setUser}/>
           </Flex>
         </Box>
-        <ChangePwButton />
+        <ChangePwButton user={user} setUser={setUser}/>
       </Stack>
     </VStack>
   );

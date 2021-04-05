@@ -19,6 +19,7 @@ import {
 } from "@chakra-ui/react";
 import { AiOutlineEdit } from "react-icons/ai";
 import { User } from "../../App";
+import axios from "axios";
 
 export interface ChangeEmailButtonParams {
   user: User;
@@ -32,6 +33,41 @@ export default function ChangeEmailButton({
   const { onOpen, onClose, isOpen } = useDisclosure();
   const [email, setEmail] = React.useState<string>(user.email);
   const toast = useToast();
+
+  function clickSave() {
+    if (!email.includes("@")) {
+      toast({
+        title: "Please type in a valid e-mail address!",
+        status: "error",
+        isClosable: true,
+      });
+    } else {
+      if (email === user.email) {
+        toast({
+          title: "E-mail address cannot match your current address!",
+          status: "error",
+          isClosable: true,
+        });
+      } else {
+        axios
+          .put("https://localhost:44330/api/users/edit/email", {
+            id: user.id,
+            email: email,
+          })
+          .then(() => {
+            const tmp = user;
+            tmp.email = email;
+            setUser(tmp);
+
+            toast({
+              title: "Email address changed successfully!",
+              status: "success",
+              isClosable: true,
+            });
+          });
+      }
+    }
+  }
 
   return (
     <Popover
@@ -85,17 +121,7 @@ export default function ChangeEmailButton({
               <Button
                 colorScheme="purple"
                 onClick={() => {
-                  if (email.includes("@")) {
-                    const tmp = user;
-                    tmp.email = email;
-                    setUser(tmp);
-                  } else {
-                    toast({
-                      title: "That is not a valid e-mail adress!",
-                      status: "error",
-                      isClosable: true,
-                    });
-                  }
+                  clickSave();
                 }}
               >
                 Save

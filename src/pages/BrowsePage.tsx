@@ -65,7 +65,6 @@ async function getPalettes({
       .get("https://localhost:44330/api/colorpalettes/"+userId)
       .then((response) => {
         response.data.map((value: JsonPalette) => {
-          console.log(value.colors);
           var palette ={
             id: value.id,
             name: value.name,

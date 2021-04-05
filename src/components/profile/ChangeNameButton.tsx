@@ -15,9 +15,11 @@ import {
   FormControl,
   FormLabel,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 import { AiOutlineEdit } from "react-icons/ai";
 import { User } from "../../App";
+import axios from "axios";
 
 export interface ChangeNameButtonParams {
   user: User;
@@ -35,6 +37,43 @@ export default function ChangeNameButton({
   const [lastName, setLastName] = React.useState<string>(
     user.name.split(" ")[1]
   );
+
+  const toast = useToast();
+
+  function clickSave() {
+    if (firstName === "" || lastName === "") {
+      toast({
+        title: "Please fill all of the fields!",
+        status: "error",
+        isClosable: true,
+      });
+    } else {
+      if (firstName + " " + lastName === user.name) {
+        toast({
+          title: "Name cannot match your current name!",
+          status: "error",
+          isClosable: true,
+        });
+      } else {
+        axios
+          .put("https://localhost:44330/api/users/edit/name", {
+            id: user.id,
+            name: firstName + " " + lastName,
+          })
+          .then(() => {
+            const tmp = user;
+            tmp.name = firstName + " " + lastName;
+            setUser(tmp);
+
+            toast({
+              title: "Name changed successfully!",
+              status: "success",
+              isClosable: true,
+            });
+          });
+      }
+    }
+  }
 
   return (
     <Popover
@@ -94,14 +133,7 @@ export default function ChangeNameButton({
               >
                 Cancel
               </Button>
-              <Button
-                colorScheme="purple"
-                onClick={() => {
-                  const tmp = user;
-                  tmp.name = firstName + " " + lastName;
-                  setUser(tmp);
-                }}
-              >
+              <Button colorScheme="purple" onClick={() => clickSave()}>
                 Save
               </Button>
             </ButtonGroup>
