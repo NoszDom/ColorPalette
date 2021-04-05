@@ -31,7 +31,7 @@ export default function ToolBar({ userId, colors }: ToolBarParams) {
   const [paletteName, setPaletteName] = React.useState<string>("");
   const toast = useToast();
 
-  function savePalette() {
+  async function savePalette() {
     if (paletteName === "") {
       toast({
         status: "error",

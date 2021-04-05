@@ -20,11 +20,8 @@ export default function PaletteCard({ palette, userId }: PaletteCardParams) {
       <Divider />
       <PaletteFooter
         height="35px"
-        isOwn={palette.creatorId === userId}
-        isSaved={palette.savedByCurrentUser}
-        title={palette.name}
-        saves={palette.saves}
-        creatorID={palette.creatorId}
+        userId = {userId}
+        palette = {palette}
       />
     </Box>
   );
