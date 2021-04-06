@@ -35,9 +35,11 @@ function generateRandom(){
   return randomColor({hue: 'random',luminosity: 'random',count: 5});
 }
 
+// jelenleg a randomcolor által generált színnel crashel, ezért a konstans hue-k közül választok egyet
 function generateMonochrome(){
-  var baseColor = randomColor({hue: 'random',luminosity: 'random'});
-  return randomColor({hue: baseColor, count: 5});
+  const hueOption = ["red", "orange", "yellow", "green", "blue", "purple", "pink"];
+  const randomHue = hueOption[Math.floor(Math.random() * hueOption.length)];
+  return randomColor({hue: randomHue, count: 5});
 }
 
 
