@@ -61,9 +61,7 @@ export default function ChangeNameButton({
             name: firstName + " " + lastName,
           })
           .then(() => {
-            const tmp = user;
-            tmp.name = firstName + " " + lastName;
-            setUser(tmp);
+            setUser( (prev) => ({...prev, name: firstName + " " + lastName}));
 
             toast({
               title: "Name changed successfully!",

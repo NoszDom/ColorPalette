@@ -44,21 +44,12 @@ export default function ColorPanel({
 
 function isTextBlack(color: string) {
   const rgb: Array<number> = hexRgb(color, { format: "array" });
-  const red: number = calculateLuminanceComponent(rgb[0]);
-  const green: number = calculateLuminanceComponent(rgb[1]);
-  const blue: number = calculateLuminanceComponent(rgb[2]);
 
-  const luminance: number = 0.2126 * red + 0.7152 * green + 0.0722 * blue;
+  const textColor = (rgb[0]*299 + rgb[1]*587 + rgb[2]*114) / 1000;
 
   const result: boolean =
-    (luminance + 0.05) / (0.0 + 0.05) > (1.0 + 0.05) / (luminance + 0.05)
+    (textColor > 125)
       ? true
       : false;
-  return result;
-}
-
-function calculateLuminanceComponent(color: number) {
-  const result: number =
-    color / 255 <= 0.03928 ? color / 12.92 : ((color + 0.055) / 1.055) ^ 2.4;
   return result;
 }

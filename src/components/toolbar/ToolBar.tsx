@@ -24,9 +24,10 @@ import axios from "axios";
 export interface ToolBarParams {
   userId: number;
   colors: Array<string>;
+  setColors: React.Dispatch<React.SetStateAction<Array<string>>>;
 }
 
-export default function ToolBar({ userId, colors }: ToolBarParams) {
+export default function ToolBar({ userId, colors, setColors }: ToolBarParams) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [paletteName, setPaletteName] = React.useState<string>("");
   const toast = useToast();
@@ -58,7 +59,7 @@ export default function ToolBar({ userId, colors }: ToolBarParams) {
 
   return (
     <Flex h="55px" fontSize="xl" ml={5} mr={5}>
-      <Generator />
+      <Generator colors = {colors} setColors={setColors}/>
       <Spacer />
       <Center>
         <Button colorScheme="purple" onClick={onOpen}>

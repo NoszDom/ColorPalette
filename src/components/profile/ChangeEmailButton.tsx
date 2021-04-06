@@ -55,9 +55,7 @@ export default function ChangeEmailButton({
             email: email,
           })
           .then(() => {
-            const tmp = user;
-            tmp.email = email;
-            setUser(tmp);
+            setUser( (prev) => ({...prev, email: email}));
 
             toast({
               title: "Email address changed successfully!",

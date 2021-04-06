@@ -13,7 +13,7 @@ export default function GeneratorPage({userId} : GeneratorPageParams) {
 
   return (
     <Box h = "calc(100% - 56px)" w="100%">
-      <ToolBar userId={userId} colors = {colors}/>
+      <ToolBar userId={userId} colors = {colors} setColors={setColors}/>
       <ColorPalette
         colors={colors}
         height="calc(100% - 55px)"
