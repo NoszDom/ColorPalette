@@ -47,6 +47,11 @@ export default function ColorPickerPopUp({
   );
   const [hex, setHex] = React.useState<string>(colors[index]);
 
+  React.useEffect(() => {
+    setRgb(hexRgb(colors[index], { format: "array" }));
+    setHex(colors[index]);
+  }, [colors[index]]);
+
   function rgbChanged() {
     const tmp = colors;
     tmp[index] = "#" + rgbHex(rgb[0], rgb[1], rgb[2]);
@@ -186,7 +191,7 @@ export default function ColorPickerPopUp({
             <HStack spacing={6}>
               <Text fontWeight="bold">HEX</Text>
               <Input
-                w="80px"
+                w="81px"
                 size="sm"
                 maxLength={7}
                 value={hex}

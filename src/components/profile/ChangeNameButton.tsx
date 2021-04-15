@@ -56,7 +56,7 @@ export default function ChangeNameButton({
         });
       } else {
         axios
-          .put("https://localhost:44330/api/users/edit/name", {
+          .put("https://localhost:5001/api/users/edit/name", {
             id: user.id,
             name: firstName + " " + lastName,
           })

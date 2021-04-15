@@ -47,7 +47,7 @@ export default function ChangePwButton({ user }: PwButtonParams) {
         });
       } else {
         axios
-          .put("https://localhost:44330/api/users/edit/password", {
+          .put("https://localhost:5001/api/users/edit/password", {
             id: user.id,
             oldPassword: oldPw,
             newPassword: newPw,

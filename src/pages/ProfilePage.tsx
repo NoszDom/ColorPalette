@@ -9,6 +9,7 @@ import {
   Text,
   Divider,
   Box,
+  Button,
 } from "@chakra-ui/react";
 import { User } from "../App";
 import ChangePicButton from "../components/profile/ChangePicButton";
@@ -30,7 +31,6 @@ export default function ProfilePage({ user, setUser }: ProfileParams) {
         </AvatarBadge>
       </Avatar>
       <Stack
-        border="solid"
         padding="15px"
         borderRadius="xl"
         borderWidth="1px"
@@ -57,6 +57,7 @@ export default function ProfilePage({ user, setUser }: ProfileParams) {
           </Flex>
         </Box>
         <ChangePwButton user={user} setUser={setUser}/>
+        <Button colorScheme="red" alignSelf="center" variant="outline">Log out</Button>
       </Stack>
     </VStack>
   );

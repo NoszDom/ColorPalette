@@ -50,7 +50,7 @@ export default function ChangeEmailButton({
         });
       } else {
         axios
-          .put("https://localhost:44330/api/users/edit/email", {
+          .put("https://localhost:5001/api/users/edit/email", {
             id: user.id,
             email: email,
           })

@@ -11,6 +11,7 @@ import ProfilePage from "./pages/ProfilePage";
 import BrowsePage from "./pages/BrowsePage";
 import SavedPage from "./pages/SavedPage";
 import OwnPage from "./pages/OwnPage";
+import LoginPage from "./pages/LoginPage";
 import NavBar from "./components/navbar/NavBar";
 import {
   BrowserRouter as Router,
@@ -36,7 +37,7 @@ export interface ColorPalette {
   savedByCurrentUser: boolean;
 }
 
-export interface JsonPalette{
+export interface JsonPalette {
   id: number;
   name: string;
   colors: string;
@@ -50,7 +51,7 @@ export default function App() {
   const [currentUser, setCurrentUser] = React.useState<User>({
     id: -1,
     name: "",
-    email: ""
+    email: "",
   });
 
   const [loggedIn, setLoggedIn] = React.useState<boolean>(false);
@@ -81,25 +82,22 @@ export default function App() {
           <Divider />
           <Switch>
             <Route exact path="/">
-              <Redirect to="/generator" />
+              <Redirect to="/login" />
+            </Route>
+            <Route exact path="/login">
+              <LoginPage />
             </Route>
             <Route exact path="/generator">
-              <GeneratorPage userId={currentUser.id}/>
+              <GeneratorPage userId={currentUser.id} />
             </Route>
             <Route exact path="/browse">
-              <BrowsePage
-                userId={currentUser.id}
-              />
+              <BrowsePage userId={currentUser.id} />
             </Route>
             <Route exact path="/saved">
-              <SavedPage
-                userId={currentUser.id}
-              />
+              <SavedPage userId={currentUser.id} />
             </Route>
             <Route exact path="/own">
-              <OwnPage
-                userId={currentUser.id}
-              />
+              <OwnPage userId={currentUser.id} />
             </Route>
             <Route exact path="/myprofile">
               <ProfilePage user={currentUser} setUser={setCurrentUser} />
@@ -119,7 +117,7 @@ interface logInParams {
 
 async function logIn({ loggedIn, setLoggedIn, setUser }: logInParams) {
   if (!loggedIn) {
-    axios.get("https://localhost:44330/api/users/8").then((response) => {
+    axios.get("https://localhost:5001/api/users/8").then((response) => {
       setUser(response.data);
       setLoggedIn(true);
     });

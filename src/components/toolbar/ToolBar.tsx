@@ -41,7 +41,7 @@ export default function ToolBar({ userId, colors, setColors }: ToolBarParams) {
       });
     } else {
       axios
-        .post("https://localhost:44330/api/colorpalettes/", {
+        .post("https://localhost:5001/api/colorpalettes/", {
           name: paletteName,
           colors: JSON.stringify(colors),
           creatorId: userId,

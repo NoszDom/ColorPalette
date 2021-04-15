@@ -62,7 +62,7 @@ async function getPalettes({
 }: getPalettesParams) {
   if (!loaded) {
     axios
-      .get('https://localhost:44330/api/colorpalettes/'+userId+'/saved')
+      .get('https://localhost:5001/api/colorpalettes/'+userId+'/saved')
       .then((response) => {
         response.data.map((value: JsonPalette) => {
           console.log(value.colors);

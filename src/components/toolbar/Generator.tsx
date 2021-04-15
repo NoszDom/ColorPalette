@@ -20,7 +20,7 @@ export default function ToolBar({colors, setColors} : GeneratorParams) {
   return (
     <HStack>
       <Select variant="filled" defaultValue = "random" onChange={(e) => setCurrentMethod(e.target.value)}>
-        <option value="random" >Random</option>
+        <option value="random">Random</option>
         <option value="monochrome">Monochrome</option>
       </Select>
 
