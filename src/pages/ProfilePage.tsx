@@ -11,7 +11,7 @@ import {
   Box,
   Button,
 } from "@chakra-ui/react";
-import { User } from "../App";
+import { User } from "../models/User";
 import ChangePicButton from "../components/profile/ChangePicButton";
 import ChangeNameButton from "../components/profile/ChangeNameButton";
 import ChangeEmailButton from "../components/profile/ChangeEmailButton";

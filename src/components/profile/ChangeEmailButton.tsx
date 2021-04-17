@@ -18,8 +18,9 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { AiOutlineEdit } from "react-icons/ai";
-import { User } from "../../App";
+import { User } from "../../models/User";
 import axios from "axios";
+import { targetApiUrl } from "../../network/Config";
 
 export interface ChangeEmailButtonParams {
   user: User;
@@ -50,12 +51,12 @@ export default function ChangeEmailButton({
         });
       } else {
         axios
-          .put("https://localhost:5001/api/users/edit/email", {
+          .put(targetApiUrl + "/users/edit/email", {
             id: user.id,
             email: email,
           })
           .then(() => {
-            setUser( (prev) => ({...prev, email: email}));
+            setUser((prev) => ({ ...prev, email: email }));
 
             toast({
               title: "Email address changed successfully!",

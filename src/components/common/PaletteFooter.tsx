@@ -9,8 +9,9 @@ import {
 } from "@chakra-ui/react";
 import { FiTrash2 } from "react-icons/fi";
 import { MdBookmark, MdBookmarkBorder } from "react-icons/md";
-import { ColorPalette } from "../../App";
+import { ColorPalette } from "../../models/ColorPalette";
 import axios from "axios";
+import { targetApiUrl } from "../../network/Config";
 
 export interface FooterParams {
   height: string;
@@ -23,11 +24,9 @@ export default function PaletteFooter({
   userId,
   palette,
 }: FooterParams) {
-  
   const toast = useToast();
 
   const [saved, setSaved] = React.useState<boolean>(palette.savedByCurrentUser);
-
 
   const button =
     palette.creatorId === userId ? (
@@ -36,46 +35,45 @@ export default function PaletteFooter({
         aria-label="Delete item"
         icon={<FiTrash2 />}
         fontSize="md"
-        onClick = {() => deletePalette()}
+        onClick={() => deletePalette()}
       />
     ) : (
       <IconButton
         variant="ghost"
         aria-label="Save item"
-        icon={
-          saved ? <MdBookmark /> : <MdBookmarkBorder />
-        }
+        icon={saved ? <MdBookmark /> : <MdBookmarkBorder />}
         fontSize="md"
-        onClick = {() => saved ? unSavePalette() : savePalette()}
+        onClick={() => (saved ? unSavePalette() : savePalette())}
       />
     );
 
   async function deletePalette() {
-    axios
-      .delete("https://localhost:44330/api/colorpalettes/" + palette.id)
-      .then(() =>
-        toast({
-          status: "success",
-          title: palette.name + " deleted!",
-          isClosable: true,
-        })
-      );
-  }
-
-  async function savePalette(){
-    axios
-    .post("https://localhost:44330/api/saves/", {userId : userId, colorPaletteId: palette.id})
-    .then(() =>
-      {setSaved(true)}
+    axios.delete(targetApiUrl + "/colorpalettes/" + palette.id).then(() =>
+      toast({
+        status: "success",
+        title: palette.name + " deleted!",
+        isClosable: true,
+      })
     );
   }
 
-  async function unSavePalette(){
+  async function savePalette() {
     axios
-    .delete("https://localhost:44330/api/saves/" + palette.id + "/" + userId)
-    .then(() =>
-      {setSaved(false)}
-    );
+      .post(targetApiUrl + "/saves/", {
+        userId: userId,
+        colorPaletteId: palette.id,
+      })
+      .then(() => {
+        setSaved(true);
+      });
+  }
+
+  async function unSavePalette() {
+    axios
+      .delete(targetApiUrl + "/saves/" + palette.id + "/" + userId)
+      .then(() => {
+        setSaved(false);
+      });
   }
 
   return (

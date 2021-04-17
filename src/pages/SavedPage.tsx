@@ -1,7 +1,8 @@
 import * as React from "react";
 import { Box, Center, Spinner } from "@chakra-ui/react";
 import PaletteCollection from "../components/common/PaletteCollection";
-import { ColorPalette, JsonPalette } from "../App";
+import { ColorPalette, JsonPalette } from "../models/ColorPalette";
+import { targetApiUrl } from "../network/Config";
 import axios from "axios";
 
 export interface BrowseParams {
@@ -33,7 +34,7 @@ export default function BrowsePage({ userId }: BrowseParams) {
         overflowX="hidden"
         p={7}
       >
-        <PaletteCollection paletteArray={palettes} userId={userId}/>
+        <PaletteCollection paletteArray={palettes} userId={userId} />
       </Box>
     );
   } else {
@@ -62,7 +63,7 @@ async function getPalettes({
 }: getPalettesParams) {
   if (!loaded) {
     axios
-      .get('https://localhost:5001/api/colorpalettes/'+userId+'/saved')
+      .get(targetApiUrl + "/colorpalettes/" + userId + "/saved")
       .then((response) => {
         response.data.map((value: JsonPalette) => {
           console.log(value.colors);

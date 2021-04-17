@@ -2,7 +2,7 @@ import * as React from "react";
 import { Box, Divider } from "@chakra-ui/react";
 import ColorPalette from "./ColorPalette";
 import PaletteFooter from "./PaletteFooter";
-import { ColorPalette as Palette } from "../../App";
+import { ColorPalette as Palette } from "../../models/ColorPalette";
 
 export interface PaletteCardParams {
   palette: Palette;

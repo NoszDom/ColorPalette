@@ -20,32 +20,8 @@ import {
   Redirect,
 } from "react-router-dom";
 import axios from "axios";
-
-export interface User {
-  id: number;
-  name: string;
-  email: string;
-}
-
-export interface ColorPalette {
-  id: number;
-  name: string;
-  colors: Array<string>;
-  creatorId: number;
-  creatorName: string;
-  saves: number;
-  savedByCurrentUser: boolean;
-}
-
-export interface JsonPalette {
-  id: number;
-  name: string;
-  colors: string;
-  creatorId: number;
-  creatorName: string;
-  saves: number;
-  savedByCurrentUser: boolean;
-}
+import { User } from "./models/User";
+import { targetApiUrl } from "./network/Config";
 
 export default function App() {
   const [currentUser, setCurrentUser] = React.useState<User>({
@@ -117,7 +93,7 @@ interface logInParams {
 
 async function logIn({ loggedIn, setLoggedIn, setUser }: logInParams) {
   if (!loggedIn) {
-    axios.get("https://localhost:5001/api/users/8").then((response) => {
+    axios.get(targetApiUrl + "/users/8").then((response) => {
       setUser(response.data);
       setLoggedIn(true);
     });

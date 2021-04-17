@@ -18,8 +18,9 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { AiOutlineEdit } from "react-icons/ai";
-import { User } from "../../App";
+import { User } from "../../models/User";
 import axios from "axios";
+import { targetApiUrl } from "../../network/Config";
 
 export interface ChangeNameButtonParams {
   user: User;
@@ -56,12 +57,12 @@ export default function ChangeNameButton({
         });
       } else {
         axios
-          .put("https://localhost:5001/api/users/edit/name", {
+          .put(targetApiUrl + "/users/edit/name", {
             id: user.id,
             name: firstName + " " + lastName,
           })
           .then(() => {
-            setUser( (prev) => ({...prev, name: firstName + " " + lastName}));
+            setUser((prev) => ({ ...prev, name: firstName + " " + lastName }));
 
             toast({
               title: "Name changed successfully!",

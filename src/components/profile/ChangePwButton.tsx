@@ -17,7 +17,8 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
-import { User } from "../../App";
+import { User } from "../../models/User";
+import { targetApiUrl } from "../../network/Config";
 
 export interface PwButtonParams {
   user: User;
@@ -47,7 +48,7 @@ export default function ChangePwButton({ user }: PwButtonParams) {
         });
       } else {
         axios
-          .put("https://localhost:5001/api/users/edit/password", {
+          .put(targetApiUrl + "/users/edit/password", {
             id: user.id,
             oldPassword: oldPw,
             newPassword: newPw,

@@ -20,6 +20,7 @@ import {
 } from "@chakra-ui/react";
 import Generator from "./Generator";
 import axios from "axios";
+import { targetApiUrl } from "../../network/Config";
 
 export interface ToolBarParams {
   userId: number;
@@ -41,7 +42,7 @@ export default function ToolBar({ userId, colors, setColors }: ToolBarParams) {
       });
     } else {
       axios
-        .post("https://localhost:5001/api/colorpalettes/", {
+        .post(targetApiUrl + "/colorpalettes/", {
           name: paletteName,
           colors: JSON.stringify(colors),
           creatorId: userId,
@@ -59,7 +60,7 @@ export default function ToolBar({ userId, colors, setColors }: ToolBarParams) {
 
   return (
     <Flex h="55px" fontSize="xl" ml={5} mr={5}>
-      <Generator colors = {colors} setColors={setColors}/>
+      <Generator colors={colors} setColors={setColors} />
       <Spacer />
       <Center>
         <Button colorScheme="purple" onClick={onOpen}>

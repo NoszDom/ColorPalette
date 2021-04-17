@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Wrap, WrapItem } from "@chakra-ui/react";
 import PaletteCard from "./PaletteCard";
-import { ColorPalette } from "../../App"
+import { ColorPalette } from "../../models/ColorPalette"
 
 
 export interface PaletteCollectionParams {
