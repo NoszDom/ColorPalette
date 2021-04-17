@@ -39,39 +39,37 @@ export default function ChangePwButton({ user }: PwButtonParams) {
         status: "error",
         isClosable: true,
       });
+    } else if (newPw !== newPwAg) {
+      toast({
+        title: "The two passwords does not match!",
+        status: "error",
+        isClosable: true,
+      });
     } else {
-      if (newPw !== newPwAg) {
-        toast({
-          title: "The two passwords does not match!",
-          status: "error",
-          isClosable: true,
-        });
-      } else {
-        axios
-          .put(targetApiUrl + "/users/edit/password", {
-            id: user.id,
-            oldPassword: oldPw,
-            newPassword: newPw,
+      axios
+        .put(targetApiUrl + "/users/edit/password", {
+          id: user.id,
+          oldPassword: oldPw,
+          newPassword: newPw,
+        })
+        .then(() => {
+          toast({
+            title: "Password changed successfully!",
+            status: "success",
+            isClosable: true,
+          });
+          onClose();
+          setOldPw("");
+          setNewPw("");
+          setNewPwAg("");
+        })
+        .catch((error) =>
+          toast({
+            title: "Current password does not match!",
+            status: "error",
+            isClosable: true,
           })
-          .then(() => {
-            toast({
-              title: "Password changed successfully!",
-              status: "success",
-              isClosable: true,
-            });
-            onClose();
-            setOldPw("");
-            setNewPw("");
-            setNewPwAg("");
-          })
-          .catch((error) =>
-            toast({
-              title: "Current password does not match!",
-              status: "error",
-              isClosable: true,
-            })
-          );
-      }
+        );
     }
   }
 

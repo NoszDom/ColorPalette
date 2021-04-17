@@ -42,29 +42,27 @@ export default function ChangeEmailButton({
         status: "error",
         isClosable: true,
       });
+    } else if (email === user.email) {
+      toast({
+        title: "E-mail address cannot match your current address!",
+        status: "error",
+        isClosable: true,
+      });
     } else {
-      if (email === user.email) {
-        toast({
-          title: "E-mail address cannot match your current address!",
-          status: "error",
-          isClosable: true,
-        });
-      } else {
-        axios
-          .put(targetApiUrl + "/users/edit/email", {
-            id: user.id,
-            email: email,
-          })
-          .then(() => {
-            setUser((prev) => ({ ...prev, email: email }));
+      axios
+        .put(targetApiUrl + "/users/edit/email", {
+          id: user.id,
+          email: email,
+        })
+        .then(() => {
+          setUser((prev) => ({ ...prev, email: email }));
 
-            toast({
-              title: "Email address changed successfully!",
-              status: "success",
-              isClosable: true,
-            });
+          toast({
+            title: "Email address changed successfully!",
+            status: "success",
+            isClosable: true,
           });
-      }
+        });
     }
   }
 

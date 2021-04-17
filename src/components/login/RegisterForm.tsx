@@ -2,72 +2,124 @@ import * as React from "react";
 import {
   FormControl,
   Input,
-  FormErrorMessage,
   FormLabel,
   Button,
-  Stack,
+  Center,
+  useToast,
 } from "@chakra-ui/react";
+import { useForm } from "react-hook-form";
+import { targetApiUrl } from "../../network/Config";
+import axios from "axios";
 
 export default function LoginForms() {
-  const [firstName, setFirstName] = React.useState<string>("");
-  const [lastName, setLastName] = React.useState<string>("");
-  const [email, setEmail] = React.useState<string>("");
-  const [pw, setPw] = React.useState<string>("");
-  const [pwAg, setPwAg] = React.useState<string>("");
+  const { handleSubmit, formState, setValue } = useForm<{
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+    passwordAgain: string;
+  }>();
+
+  const toast = useToast();
+
+  function onSubmit(values: any) {
+    return new Promise((resolve) => {
+      if (values.password !== values.passwordAgain) {
+        toast({
+          status: "error",
+          title: "The two passwords are not the same!",
+          isClosable: true,
+        });
+      } else if (
+        values.firstName.length === 0 ||
+        values.lastName.length === 0 ||
+        values.email.length === 0 ||
+        values.password.length === 0 ||
+        values.passwordAgain.length === 0
+      ) {
+        toast({
+          status: "error",
+          title: "You must fill in all of the boxes!",
+          isClosable: true,
+        });
+      } else {
+        createUser(
+          values.firstName + " " + values.lastName,
+          values.email,
+          values.password
+        );
+      }
+      //@ts-ignore
+      resolve();
+    });
+  }
+
+  async function createUser(name: string, email: string, password: string) {
+    axios
+      .post(targetApiUrl + "/users/", {
+        name: name,
+        email: email,
+        password: password,
+      })
+      .then(() => {
+        toast({
+          status: "success",
+          title: "User registered successfully",
+          isClosable: true,
+        });
+      });
+  }
 
   return (
-    <Stack spacing={4}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <FormControl>
-        <FormLabel htmlFor="first-name">First name:</FormLabel>
+        <FormLabel htmlFor="firstName">First name:</FormLabel>
         <Input
-          id="first-name"
-          value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
+          name="firstName"
+          onChange={(e) => setValue("firstName", e.target.value)}
         />
       </FormControl>
-      <FormControl>
-        <FormLabel htmlFor="last-name">Last name:</FormLabel>
+      <FormControl mt={4}>
+        <FormLabel htmlFor="lastName">Last name:</FormLabel>
         <Input
-          id="last-name"
-          value={lastName}
-          onChange={(e) => setLastName(e.target.value)}
+          name="lastName"
+          onChange={(e) => setValue("lastName", e.target.value)}
         />
       </FormControl>
-      <FormControl>
+      <FormControl mt={4}>
         <FormLabel htmlFor="email">Email:</FormLabel>
         <Input
-          id="email"
+          name="email"
           type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => setValue("email", e.target.value)}
         />
       </FormControl>
-      <FormControl>
+      <FormControl mt={4}>
         <FormLabel htmlFor="password">Password:</FormLabel>
         <Input
-          id="password"
+          name="password"
           type="password"
-          value={pw}
-          onChange={(e) => setPw(e.target.value)}
+          onChange={(e) => setValue("password", e.target.value)}
         />
       </FormControl>
-      <FormControl>
-        <FormLabel htmlFor="password-again">Password again:</FormLabel>
+      <FormControl mt={4}>
+        <FormLabel htmlFor="passwordAgain">Password again:</FormLabel>
         <Input
-          id="password-again"
+          name="passwordAgain"
           type="password"
-          value={pwAg}
-          onChange={(e) => setPwAg(e.target.value)}
+          onChange={(e) => setValue("passwordAgain", e.target.value)}
         />
       </FormControl>
-      <Button
-        colorScheme="purple"
-        type="submit"
-        alignSelf="center"
-        onClick={() => alert(firstName + " " + lastName + " " +email + " " + pw)}
-      >
-        Register
-      </Button>
-    </Stack>
+      <Center>
+        <Button
+          mt={4}
+          colorScheme="purple"
+          type="submit"
+          isLoading={formState.isSubmitting}
+        >
+          Register
+        </Button>
+      </Center>
+    </form>
   );
 }

@@ -1,45 +1,90 @@
 import * as React from "react";
 import {
+  Center,
   FormControl,
   Input,
-  FormErrorMessage,
   FormLabel,
   Button,
-  Stack,
+  useToast,
 } from "@chakra-ui/react";
+import { useForm } from "react-hook-form";
+import { targetApiUrl } from "../../network/Config";
+import axios from "axios";
 
 export default function LoginForms() {
-  const [email, setEmail] = React.useState<string>("");
-  const [pw, setPw] = React.useState<string>("");
+  const { handleSubmit, formState, setValue } = useForm<{
+    email: string;
+    password: string;
+  }>();
+
+  const toast = useToast();
+
+  function onSubmit(values: any) {
+    return new Promise((resolve) => {
+      if (values.email.length === 0 || values.password.length === 0) {
+        toast({
+          status: "error",
+          title: "You must fill in all of the boxes!",
+          isClosable: true,
+        });
+      } else {
+        loginUser(values.email, values.password);
+      }
+      //@ts-ignore
+      resolve();
+    });
+  }
+
+  async function loginUser(email: string, password: string) {
+    axios
+      .post(targetApiUrl + "/users/login", {
+        email: email,
+        password: password,
+      })
+      .then((response) => {
+        toast({
+          status: "success",
+          title: JSON.stringify(response.data),
+          isClosable: true,
+        });
+      })
+      .catch(() => {
+        toast({
+          status: "error",
+          title: "Wrong e-mail address or password!",
+          isClosable: true,
+        });
+      });
+  }
 
   return (
-    <Stack spacing={4}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <FormControl>
         <FormLabel htmlFor="email">Email:</FormLabel>
         <Input
-          id="email"
+          name="email"
           type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => setValue("email", e.target.value)}
         />
       </FormControl>
-      <FormControl>
+      <FormControl mt={4}>
         <FormLabel htmlFor="password">Password:</FormLabel>
         <Input
-          id="password"
+          name="password"
           type="password"
-          value={pw}
-          onChange={(e) => setPw(e.target.value)}
+          onChange={(e) => setValue("password", e.target.value)}
         />
       </FormControl>
-      <Button
-        colorScheme="purple"
-        type="submit"
-        alignSelf="center"
-        onClick={() => alert(email + " " + pw)}
-      >
-        Log in
-      </Button>
-    </Stack>
+      <Center>
+        <Button
+          mt={4}
+          colorScheme="purple"
+          type="submit"
+          isLoading={formState.isSubmitting}
+        >
+          Log in
+        </Button>
+      </Center>
+    </form>
   );
 }

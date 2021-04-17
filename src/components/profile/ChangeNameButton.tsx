@@ -48,29 +48,27 @@ export default function ChangeNameButton({
         status: "error",
         isClosable: true,
       });
+    } else if (firstName + " " + lastName === user.name) {
+      toast({
+        title: "Name cannot match your current name!",
+        status: "error",
+        isClosable: true,
+      });
     } else {
-      if (firstName + " " + lastName === user.name) {
-        toast({
-          title: "Name cannot match your current name!",
-          status: "error",
-          isClosable: true,
-        });
-      } else {
-        axios
-          .put(targetApiUrl + "/users/edit/name", {
-            id: user.id,
-            name: firstName + " " + lastName,
-          })
-          .then(() => {
-            setUser((prev) => ({ ...prev, name: firstName + " " + lastName }));
+      axios
+        .put(targetApiUrl + "/users/edit/name", {
+          id: user.id,
+          name: firstName + " " + lastName,
+        })
+        .then(() => {
+          setUser((prev) => ({ ...prev, name: firstName + " " + lastName }));
 
-            toast({
-              title: "Name changed successfully!",
-              status: "success",
-              isClosable: true,
-            });
+          toast({
+            title: "Name changed successfully!",
+            status: "success",
+            isClosable: true,
           });
-      }
+        });
     }
   }
 
