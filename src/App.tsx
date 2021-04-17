@@ -3,8 +3,6 @@ import {
   ChakraProvider,
   theme,
   Divider,
-  Center,
-  Spinner,
 } from "@chakra-ui/react";
 import GeneratorPage from "./pages/GeneratorPage";
 import ProfilePage from "./pages/ProfilePage";
@@ -19,9 +17,7 @@ import {
   Route,
   Redirect,
 } from "react-router-dom";
-import axios from "axios";
 import { User } from "./models/User";
-import { targetApiUrl } from "./network/Config";
 
 export default function App() {
   const [currentUser, setCurrentUser] = React.useState<User>({
@@ -32,22 +28,14 @@ export default function App() {
 
   const [loggedIn, setLoggedIn] = React.useState<boolean>(false);
 
-  React.useEffect(() => {
-    if (!loggedIn) {
-      logIn({
-        loggedIn: loggedIn,
-        setLoggedIn: setLoggedIn,
-        setUser: setCurrentUser,
-      });
-    }
-  }, [loggedIn]);
-
   if (!loggedIn) {
     return (
       <ChakraProvider theme={theme}>
-        <Center w="100%" h="100%">
-          <Spinner size="xl" />
-        </Center>
+        <LoginPage
+          loggedIn={loggedIn}
+          setLoggedIn={setLoggedIn}
+          setUser={setCurrentUser}
+        />
       </ChakraProvider>
     );
   } else {
@@ -58,10 +46,7 @@ export default function App() {
           <Divider />
           <Switch>
             <Route exact path="/">
-              <Redirect to="/login" />
-            </Route>
-            <Route exact path="/login">
-              <LoginPage />
+              <Redirect to="/generator" />
             </Route>
             <Route exact path="/generator">
               <GeneratorPage userId={currentUser.id} />
@@ -82,20 +67,5 @@ export default function App() {
         </Router>
       </ChakraProvider>
     );
-  }
-}
-
-interface logInParams {
-  loggedIn: boolean;
-  setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
-  setUser: React.Dispatch<React.SetStateAction<User>>;
-}
-
-async function logIn({ loggedIn, setLoggedIn, setUser }: logInParams) {
-  if (!loggedIn) {
-    axios.get(targetApiUrl + "/users/8").then((response) => {
-      setUser(response.data);
-      setLoggedIn(true);
-    });
   }
 }

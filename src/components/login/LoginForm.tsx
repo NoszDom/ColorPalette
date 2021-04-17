@@ -7,11 +7,18 @@ import {
   Button,
   useToast,
 } from "@chakra-ui/react";
+import { User, LoggedInUser } from "../../models/User";
 import { useForm } from "react-hook-form";
 import { targetApiUrl } from "../../network/Config";
 import axios from "axios";
 
-export default function LoginForms() {
+export interface LoginFormParams{
+  loggedIn: boolean;
+  setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+  setUser: React.Dispatch<React.SetStateAction<User>>;
+}
+
+export default function LoginForm({loggedIn, setLoggedIn, setUser} : LoginFormParams) {
   const { handleSubmit, formState, setValue } = useForm<{
     email: string;
     password: string;
@@ -28,25 +35,24 @@ export default function LoginForms() {
           isClosable: true,
         });
       } else {
-        loginUser(values.email, values.password);
+        loginUser(values.email, values.password, {loggedIn: loggedIn, setLoggedIn: setLoggedIn, setUser: setUser});
       }
       //@ts-ignore
       resolve();
     });
   }
 
-  async function loginUser(email: string, password: string) {
-    axios
+  async function loginUser(email: string, password: string, {loggedIn, setLoggedIn, setUser} : LoginFormParams) {
+    if(!loggedIn){
+      axios
       .post(targetApiUrl + "/users/login", {
         email: email,
         password: password,
       })
       .then((response) => {
-        toast({
-          status: "success",
-          title: JSON.stringify(response.data),
-          isClosable: true,
-        });
+        const loggedInUser: LoggedInUser = response.data;
+        setUser(loggedInUser.user);
+        setLoggedIn(true);
       })
       .catch(() => {
         toast({
@@ -55,6 +61,7 @@ export default function LoginForms() {
           isClosable: true,
         });
       });
+    }
   }
 
   return (

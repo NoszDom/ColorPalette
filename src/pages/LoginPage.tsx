@@ -8,18 +8,24 @@ import {
   TabPanels,
   TabPanel,
 } from "@chakra-ui/react";
+import { User } from "../models/User";
 import LoginForm from "../components/login/LoginForm";
 import RegisterForm from "../components/login/RegisterForm";
 
-export default function LoginPage() {
+export interface LoginPageParams {
+  loggedIn: boolean;
+  setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+  setUser: React.Dispatch<React.SetStateAction<User>>;
+}
+
+export default function LoginPage({
+  loggedIn,
+  setLoggedIn,
+  setUser,
+}: LoginPageParams) {
   return (
     <Center h="calc(100% - 56px)" overflowY="auto" padding="20px">
-      <Box
-        fontSize="xl"
-        spacing={6}
-        minWidth="300px"
-        h="100%"
-      >
+      <Box fontSize="xl" spacing={6} minWidth="300px" h="100%">
         <Tabs isFitted colorScheme="purple" variant="enclosed">
           <TabList>
             <Tab fontWeight="bold">Log in</Tab>
@@ -32,10 +38,14 @@ export default function LoginPage() {
             minWidth="300px"
           >
             <TabPanel>
-                <LoginForm/>
+              <LoginForm
+                loggedIn={loggedIn}
+                setLoggedIn={setLoggedIn}
+                setUser={setUser}
+              />
             </TabPanel>
             <TabPanel>
-                <RegisterForm/>
+              <RegisterForm />
             </TabPanel>
           </TabPanels>
         </Tabs>
