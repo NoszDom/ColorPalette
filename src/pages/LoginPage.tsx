@@ -16,12 +16,14 @@ export interface LoginPageParams {
   loggedIn: boolean;
   setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
   setUser: React.Dispatch<React.SetStateAction<User>>;
+  setToken: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export default function LoginPage({
   loggedIn,
   setLoggedIn,
   setUser,
+  setToken,
 }: LoginPageParams) {
   return (
     <Center h="calc(100% - 56px)" overflowY="auto" padding="20px">
@@ -42,6 +44,7 @@ export default function LoginPage({
                 loggedIn={loggedIn}
                 setLoggedIn={setLoggedIn}
                 setUser={setUser}
+                setToken={setToken}
               />
             </TabPanel>
             <TabPanel>

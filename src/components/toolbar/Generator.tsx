@@ -31,7 +31,7 @@ export default function ToolBar({colors, setColors} : GeneratorParams) {
   );
 }
 
-function generateRandom(){
+export function generateRandom(){
   return randomColor({hue: 'random',luminosity: 'random',count: 5});
 }
 

@@ -11,14 +11,22 @@ import { User, LoggedInUser } from "../../models/User";
 import { useForm } from "react-hook-form";
 import { targetApiUrl } from "../../network/Config";
 import axios from "axios";
+import save from "../../storage/Save";
+import { configAxios } from "../../network/Config";
 
-export interface LoginFormParams{
+export interface LoginFormParams {
   loggedIn: boolean;
   setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
   setUser: React.Dispatch<React.SetStateAction<User>>;
+  setToken: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export default function LoginForm({loggedIn, setLoggedIn, setUser} : LoginFormParams) {
+export default function LoginForm({
+  loggedIn,
+  setLoggedIn,
+  setUser,
+  setToken,
+}: LoginFormParams) {
   const { handleSubmit, formState, setValue } = useForm<{
     email: string;
     password: string;
@@ -35,32 +43,46 @@ export default function LoginForm({loggedIn, setLoggedIn, setUser} : LoginFormPa
           isClosable: true,
         });
       } else {
-        loginUser(values.email, values.password, {loggedIn: loggedIn, setLoggedIn: setLoggedIn, setUser: setUser});
+        loginUser(values.email, values.password, {
+          loggedIn: loggedIn,
+          setLoggedIn: setLoggedIn,
+          setUser: setUser,
+          setToken: setToken,
+        });
       }
       //@ts-ignore
       resolve();
     });
   }
 
-  async function loginUser(email: string, password: string, {loggedIn, setLoggedIn, setUser} : LoginFormParams) {
-    if(!loggedIn){
+  async function loginUser(
+    email: string,
+    password: string,
+    { loggedIn, setLoggedIn, setUser, setToken }: LoginFormParams
+  ) {
+    if (!loggedIn) {
       axios
-      .post(targetApiUrl + "/users/login", {
-        email: email,
-        password: password,
-      })
-      .then((response) => {
-        const loggedInUser: LoggedInUser = response.data;
-        setUser(loggedInUser.user);
-        setLoggedIn(true);
-      })
-      .catch(() => {
-        toast({
-          status: "error",
-          title: "Wrong e-mail address or password!",
-          isClosable: true,
+        .post(targetApiUrl + "/users/login", {
+          email: email,
+          password: password,
+        })
+        .then((response) => {
+          const loggedInUser: LoggedInUser = response.data;
+          setUser(loggedInUser.user);
+          setToken(loggedInUser.token);
+          save({ user: loggedInUser.user, token: loggedInUser.token });
+
+          configAxios({ token: loggedInUser.token, setLoggedIn: setLoggedIn });
+
+          setLoggedIn(true);
+        })
+        .catch(() => {
+          toast({
+            status: "error",
+            title: "Wrong e-mail address or password!",
+            isClosable: true,
+          });
         });
-      });
     }
   }
 

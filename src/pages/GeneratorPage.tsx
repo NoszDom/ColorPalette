@@ -2,6 +2,7 @@ import * as React from "react";
 import { Box } from "@chakra-ui/react";
 import ToolBar from "../components/toolbar/ToolBar";
 import ColorPalette from "../components/common/ColorPalette";
+import { generateRandom } from "../components/toolbar/Generator";
 
 export interface GeneratorPageParams{
   userId: number;
@@ -9,7 +10,7 @@ export interface GeneratorPageParams{
 
 export default function GeneratorPage({userId} : GeneratorPageParams) {
 
-  const [colors, setColors] = React.useState<Array<string>>(["#000000", "#ffffff","#ff0000", "#00ff00","#0000ff"]);
+  const [colors, setColors] = React.useState<Array<string>>(generateRandom());
 
   return (
     <Box h = "calc(100% - 56px)" w="100%">

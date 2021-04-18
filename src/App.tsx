@@ -1,9 +1,5 @@
 import * as React from "react";
-import {
-  ChakraProvider,
-  theme,
-  Divider,
-} from "@chakra-ui/react";
+import { ChakraProvider, theme, Divider } from "@chakra-ui/react";
 import GeneratorPage from "./pages/GeneratorPage";
 import ProfilePage from "./pages/ProfilePage";
 import BrowsePage from "./pages/BrowsePage";
@@ -18,6 +14,7 @@ import {
   Redirect,
 } from "react-router-dom";
 import { User } from "./models/User";
+import load from "./storage/Load";
 
 export default function App() {
   const [currentUser, setCurrentUser] = React.useState<User>({
@@ -26,7 +23,19 @@ export default function App() {
     email: "",
   });
 
+  const [token, setToken] = React.useState<string>("");
+
   const [loggedIn, setLoggedIn] = React.useState<boolean>(false);
+
+  React.useEffect(() => {
+    if (!loggedIn) {
+      load({
+        setLoggedIn: setLoggedIn,
+        setUser: setCurrentUser,
+        setToken: setToken,
+      });
+    }
+  }, [loggedIn]);
 
   if (!loggedIn) {
     return (
@@ -35,6 +44,7 @@ export default function App() {
           loggedIn={loggedIn}
           setLoggedIn={setLoggedIn}
           setUser={setCurrentUser}
+          setToken={setToken}
         />
       </ChakraProvider>
     );
