@@ -8,7 +8,7 @@ export interface loadParams {
   setToken: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export default async function load({
+export default function load({
   setLoggedIn,
   setUser,
   setToken,

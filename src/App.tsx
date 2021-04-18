@@ -29,7 +29,7 @@ export default function App() {
 
   React.useEffect(() => {
     if (!loggedIn) {
-      load({
+        load({
         setLoggedIn: setLoggedIn,
         setUser: setCurrentUser,
         setToken: setToken,
@@ -37,31 +37,16 @@ export default function App() {
     }
   }, [loggedIn]);
 
-  if (!loggedIn) {
-    return (
-      <ChakraProvider theme={theme}>
-        <Router>
-          <Route path="/">
-            <Redirect to="/login" />
-          </Route>
-          <Route exact path="/login">
-            <LoginPage
-              loggedIn={loggedIn}
-              setLoggedIn={setLoggedIn}
-              setUser={setCurrentUser}
-              setToken={setToken}
-            />
-          </Route>
-        </Router>
-      </ChakraProvider>
-    );
-  } else {
-    return (
+  if (loggedIn) {
+   return (
       <ChakraProvider theme={theme}>
         <Router>
           <NavBar name={currentUser.name} columns={4} />
           <Divider />
           <Switch>
+            <Route exact path="/login">
+              <Redirect to="/generator" />
+            </Route>
             <Route exact path="/generator">
               <GeneratorPage userId={currentUser.id} />
             </Route>
@@ -81,12 +66,28 @@ export default function App() {
                 setLoggedIn={setLoggedIn}
               />
             </Route>
-            <Route path="/">
-              <Redirect to="/generator" />
-            </Route>
           </Switch>
         </Router>
       </ChakraProvider>
     );
+  } else {
+    return (
+      <ChakraProvider theme={theme}>
+        <Router>
+          <Route path="/">
+            <Redirect to="/login" />
+          </Route>
+          <Route exact path="/login">
+            <LoginPage
+              loggedIn={loggedIn}
+              setLoggedIn={setLoggedIn}
+              setUser={setCurrentUser}
+              setToken={setToken}
+            />
+          </Route>
+        </Router>
+      </ChakraProvider>
+    );
+    
   }
 }

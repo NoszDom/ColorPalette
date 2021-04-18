@@ -1,9 +1,9 @@
 import * as React from "react";
 import { Box, Center, Spinner } from "@chakra-ui/react";
 import PaletteCollection from "../components/common/PaletteCollection";
-import { ColorPalette, JsonPalette } from "../models/ColorPalette";
-import { targetApiUrl } from "../network/Config";
-import axios from "axios";
+import { ColorPalette } from "../models/ColorPalette";
+import { Option } from "../models/Option";
+import { getPalettes } from "../network/Requests";
 
 export interface BrowseParams {
   userId: number;
@@ -15,26 +15,40 @@ export default function BrowsePage({ userId }: BrowseParams) {
     Array<ColorPalette>()
   );
 
+  const orderOptions: Array<Option> = [
+    { text: "Palette name A -> Z", value: "name" },
+    { text: "Palette name Z -> A", value: "name-desc" },
+    { text: "Creator name A -> Z", value: "creator" },
+    { text: "Creator name Z -> A", value: "creator-desc" },
+    { text: "Newest", value: "new" },
+    { text: "Oldest", value: "old" },
+  ];
+
+  const sortOptions: Array<Option> = [
+    { text: "Palette name", value: "name" },
+    { text: "Creator name", value: "creator" },
+  ];
+
   React.useEffect(() => {
     getPalettes({
+      route: "/colorpalettes/" + userId + "/saved",
       loaded: loaded,
       setLoaded: setLoaded,
-      palettes: palettes,
       setPalettes: setPalettes,
-      userId: userId,
     });
   }, [loaded]);
 
   if (loaded) {
     return (
-      <Box
-        w="100%"
-        h="calc(100% - 56px)"
-        overflowY="auto"
-        overflowX="hidden"
-        p={7}
-      >
-        <PaletteCollection paletteArray={palettes} userId={userId} />
+      <Box w="100%" h="calc(100% - 56px)" overflowY="auto" overflowX="hidden">
+        <PaletteCollection
+          routeBase={"/colorpalettes/" + userId + "/saved?"}
+          paletteArray={palettes}
+          setPaletteArray={setPalettes}
+          userId={userId}
+          orderOptions={orderOptions}
+          sortOptions={sortOptions}
+        />
       </Box>
     );
   } else {
@@ -43,42 +57,5 @@ export default function BrowsePage({ userId }: BrowseParams) {
         <Spinner size="xl" />
       </Center>
     );
-  }
-}
-
-interface getPalettesParams {
-  loaded: boolean;
-  setLoaded: React.Dispatch<React.SetStateAction<boolean>>;
-  palettes: Array<ColorPalette>;
-  setPalettes: React.Dispatch<React.SetStateAction<Array<ColorPalette>>>;
-  userId: number;
-}
-
-async function getPalettes({
-  loaded,
-  setLoaded,
-  palettes,
-  setPalettes,
-  userId,
-}: getPalettesParams) {
-  if (!loaded) {
-    axios
-      .get(targetApiUrl + "/colorpalettes/" + userId + "/saved")
-      .then((response) => {
-        response.data.map((value: JsonPalette) => {
-          console.log(value.colors);
-          var palette = {
-            id: value.id,
-            name: value.name,
-            creatorId: value.creatorId,
-            creatorName: value.creatorName,
-            saves: value.saves,
-            savedByCurrentUser: value.savedByCurrentUser,
-            colors: JSON.parse(value.colors),
-          };
-          setPalettes((palettes) => [...palettes, palette]);
-        });
-        setLoaded(true);
-      });
   }
 }
