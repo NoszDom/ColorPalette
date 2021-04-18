@@ -20,9 +20,10 @@ import ChangePwButton from "../components/profile/ChangePwButton";
 export interface ProfileParams {
   user: User;
   setUser: React.Dispatch<React.SetStateAction<User>>;
+  setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function ProfilePage({ user, setUser }: ProfileParams) {
+export default function ProfilePage({ user, setUser, setLoggedIn }: ProfileParams) {
   return (
     <VStack w="100%" h="calc(100% - 56px)" overflowY="auto" padding="20px">
       <Avatar name={user.name} size="2xl" mb="30px">
@@ -44,7 +45,7 @@ export default function ProfilePage({ user, setUser }: ProfileParams) {
           <Flex alignItems="center">
             <Text>{user.name}</Text>
             <Spacer />
-            <ChangeNameButton user={user} setUser={setUser}/>
+            <ChangeNameButton user={user} setUser={setUser} />
           </Flex>
         </Box>
         <Box>
@@ -53,11 +54,22 @@ export default function ProfilePage({ user, setUser }: ProfileParams) {
           <Flex alignItems="center">
             <Text>{user.email}</Text>
             <Spacer />
-            <ChangeEmailButton user={user} setUser={setUser}/>
+            <ChangeEmailButton user={user} setUser={setUser} />
           </Flex>
         </Box>
-        <ChangePwButton user={user} setUser={setUser}/>
-        <Button colorScheme="red" alignSelf="center" variant="outline">Log out</Button>
+        <ChangePwButton user={user} setUser={setUser} />
+        <Button
+          colorScheme="red"
+          alignSelf="center"
+          variant="outline"
+          onClick={() => {
+            localStorage.removeItem("user");
+            localStorage.removeItem("token");
+            setLoggedIn(false);
+          }}
+        >
+          Log out
+        </Button>
       </Stack>
     </VStack>
   );

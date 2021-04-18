@@ -40,12 +40,19 @@ export default function App() {
   if (!loggedIn) {
     return (
       <ChakraProvider theme={theme}>
-        <LoginPage
-          loggedIn={loggedIn}
-          setLoggedIn={setLoggedIn}
-          setUser={setCurrentUser}
-          setToken={setToken}
-        />
+        <Router>
+          <Route path="/">
+            <Redirect to="/login" />
+          </Route>
+          <Route exact path="/login">
+            <LoginPage
+              loggedIn={loggedIn}
+              setLoggedIn={setLoggedIn}
+              setUser={setCurrentUser}
+              setToken={setToken}
+            />
+          </Route>
+        </Router>
       </ChakraProvider>
     );
   } else {
@@ -55,9 +62,6 @@ export default function App() {
           <NavBar name={currentUser.name} columns={4} />
           <Divider />
           <Switch>
-            <Route exact path="/">
-              <Redirect to="/generator" />
-            </Route>
             <Route exact path="/generator">
               <GeneratorPage userId={currentUser.id} />
             </Route>
@@ -71,7 +75,14 @@ export default function App() {
               <OwnPage userId={currentUser.id} />
             </Route>
             <Route exact path="/myprofile">
-              <ProfilePage user={currentUser} setUser={setCurrentUser} />
+              <ProfilePage
+                user={currentUser}
+                setUser={setCurrentUser}
+                setLoggedIn={setLoggedIn}
+              />
+            </Route>
+            <Route path="/">
+              <Redirect to="/generator" />
             </Route>
           </Switch>
         </Router>

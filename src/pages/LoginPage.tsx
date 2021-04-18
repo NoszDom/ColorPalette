@@ -25,6 +25,7 @@ export default function LoginPage({
   setUser,
   setToken,
 }: LoginPageParams) {
+
   return (
     <Center h="calc(100% - 56px)" overflowY="auto" padding="20px">
       <Box fontSize="xl" spacing={6} minWidth="300px" h="100%">

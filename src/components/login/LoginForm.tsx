@@ -72,7 +72,7 @@ export default function LoginForm({
           setToken(loggedInUser.token);
           save({ user: loggedInUser.user, token: loggedInUser.token });
 
-          configAxios({ token: loggedInUser.token, setLoggedIn: setLoggedIn });
+          configAxios({ setLoggedIn: setLoggedIn });
 
           setLoggedIn(true);
         })

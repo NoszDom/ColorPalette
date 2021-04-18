@@ -21,7 +21,7 @@ export default async function load({
     if (userString === null || userString === "") return;
     const user: User = JSON.parse(userString);
 
-    configAxios({ token: token, setLoggedIn: setLoggedIn });
+    configAxios({ setLoggedIn: setLoggedIn });
 
     setToken(token);
     setUser(user);
