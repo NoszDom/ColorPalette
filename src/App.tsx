@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ChakraProvider, theme, Divider } from "@chakra-ui/react";
+import { Divider, Center, Spinner } from "@chakra-ui/react";
 import GeneratorPage from "./pages/GeneratorPage";
 import ProfilePage from "./pages/ProfilePage";
 import BrowsePage from "./pages/BrowsePage";
@@ -26,68 +26,74 @@ export default function App() {
   const [token, setToken] = React.useState<string>("");
 
   const [loggedIn, setLoggedIn] = React.useState<boolean>(false);
+  const [loaded, setLoaded] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     if (!loggedIn) {
-        load({
+      load({
         setLoggedIn: setLoggedIn,
         setUser: setCurrentUser,
         setToken: setToken,
       });
+      setLoaded(true);
     }
   }, [loggedIn]);
 
-  if (loggedIn) {
-   return (
-      <ChakraProvider theme={theme}>
-        <Router>
-          <NavBar name={currentUser.name} columns={4} />
-          <Divider />
-          <Switch>
-            <Route exact path="/login">
-              <Redirect to="/generator" />
-            </Route>
-            <Route exact path="/generator">
-              <GeneratorPage userId={currentUser.id} />
-            </Route>
-            <Route exact path="/browse">
-              <BrowsePage userId={currentUser.id} />
-            </Route>
-            <Route exact path="/saved">
-              <SavedPage userId={currentUser.id} />
-            </Route>
-            <Route exact path="/own">
-              <OwnPage userId={currentUser.id} />
-            </Route>
-            <Route exact path="/myprofile">
-              <ProfilePage
-                user={currentUser}
-                setUser={setCurrentUser}
-                setLoggedIn={setLoggedIn}
-              />
-            </Route>
-          </Switch>
-        </Router>
-      </ChakraProvider>
+  if (loggedIn && loaded) {
+    return (
+      <Router>
+        <NavBar name={currentUser.name} columns={4} />
+        <Divider />
+        <Switch>
+          <Route exact path="/">
+            <Redirect to="/generator" />
+          </Route>
+          <Route exact path="/login">
+            <Redirect to="/generator" />
+          </Route>
+          <Route exact path="/generator">
+            <GeneratorPage userId={currentUser.id} />
+          </Route>
+          <Route exact path="/browse">
+            <BrowsePage userId={currentUser.id} />
+          </Route>
+          <Route exact path="/saved">
+            <SavedPage userId={currentUser.id} />
+          </Route>
+          <Route exact path="/own">
+            <OwnPage userId={currentUser.id} />
+          </Route>
+          <Route exact path="/myprofile">
+            <ProfilePage
+              user={currentUser}
+              setUser={setCurrentUser}
+              setLoggedIn={setLoggedIn}
+            />
+          </Route>
+        </Switch>
+      </Router>
+    );
+  } else if (loaded) {
+    return (
+      <Router>
+        <Route path="/">
+          <Redirect to="/login" />
+        </Route>
+        <Route exact path="/login">
+          <LoginPage
+            loggedIn={loggedIn}
+            setLoggedIn={setLoggedIn}
+            setUser={setCurrentUser}
+            setToken={setToken}
+          />
+        </Route>
+      </Router>
     );
   } else {
     return (
-      <ChakraProvider theme={theme}>
-        <Router>
-          <Route path="/">
-            <Redirect to="/login" />
-          </Route>
-          <Route exact path="/login">
-            <LoginPage
-              loggedIn={loggedIn}
-              setLoggedIn={setLoggedIn}
-              setUser={setCurrentUser}
-              setToken={setToken}
-            />
-          </Route>
-        </Router>
-      </ChakraProvider>
+      <Center w="100%" h="100%">
+        <Spinner />
+      </Center>
     );
-    
   }
 }

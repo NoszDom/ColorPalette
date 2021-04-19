@@ -27,14 +27,17 @@ export default function LoginForm({
   setUser,
   setToken,
 }: LoginFormParams) {
-  const { handleSubmit, formState, setValue } = useForm<{
+  const { handleSubmit, setValue } = useForm<{
     email: string;
     password: string;
   }>();
 
+  const [submitting, setSubmitting] = React.useState<boolean>(false);
+
   const toast = useToast();
 
   function onSubmit(values: any) {
+
     return new Promise((resolve) => {
       if (values.email.length === 0 || values.password.length === 0) {
         toast({
@@ -43,12 +46,15 @@ export default function LoginForm({
           isClosable: true,
         });
       } else {
+        setSubmitting(true);
         loginUser(values.email, values.password, {
           loggedIn: loggedIn,
           setLoggedIn: setLoggedIn,
           setUser: setUser,
           setToken: setToken,
-        });
+        },
+        setSubmitting,
+        );
       }
       //@ts-ignore
       resolve();
@@ -58,7 +64,8 @@ export default function LoginForm({
   async function loginUser(
     email: string,
     password: string,
-    { loggedIn, setLoggedIn, setUser, setToken }: LoginFormParams
+    { loggedIn, setLoggedIn, setUser, setToken }: LoginFormParams,
+    setSubmitting: React.Dispatch<React.SetStateAction<boolean>>,
   ) {
     if (!loggedIn) {
       axios
@@ -73,8 +80,9 @@ export default function LoginForm({
           save({ user: loggedInUser.user, token: loggedInUser.token });
 
           configAxios({ setLoggedIn: setLoggedIn });
-
           setLoggedIn(true);
+          
+          setSubmitting(false);
         })
         .catch(() => {
           toast({
@@ -82,6 +90,8 @@ export default function LoginForm({
             title: "Wrong e-mail address or password!",
             isClosable: true,
           });
+          
+          setSubmitting(false);
         });
     }
   }
@@ -109,7 +119,7 @@ export default function LoginForm({
           mt={4}
           colorScheme="purple"
           type="submit"
-          isLoading={formState.isSubmitting}
+          isLoading={submitting}
         >
           Log in
         </Button>
