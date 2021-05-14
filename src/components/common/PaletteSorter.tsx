@@ -79,7 +79,7 @@ export default function PaletteSorter({
         })}
       </Select>
       <Input
-        placeholder="Sort value"
+        placeholder="Filter value"
         w="170px"
         type={inputType}
         value={sortValue}
@@ -87,7 +87,7 @@ export default function PaletteSorter({
         disabled={sortBy === ""}
       />
       <Button colorScheme="purple" onClick={() => updatePalettes()}>
-        Sort
+        Apply
       </Button>
     </HStack>
   );
