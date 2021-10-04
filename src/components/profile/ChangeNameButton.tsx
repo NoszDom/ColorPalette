@@ -33,10 +33,10 @@ export default function ChangeNameButton({
 }: ChangeNameButtonParams) {
   const { onOpen, onClose, isOpen } = useDisclosure();
   const [firstName, setFirstName] = React.useState<string>(
-    user.name.split(" ")[0]
+    user.name ? user.name.split(" ")[0] : ""
   );
   const [lastName, setLastName] = React.useState<string>(
-    user.name.split(" ")[1]
+    user.name ? user.name.split(" ")[1] : ""
   );
 
   const toast = useToast();
@@ -72,15 +72,21 @@ export default function ChangeNameButton({
     }
   }
 
+  function close() {
+    onClose();
+    if (user.name) {
+      setFirstName(user.name.split(" ")[0]);
+      setLastName(user.name.split(" ")[1]);
+    }
+  }
+
   return (
     <Popover
       isOpen={isOpen}
       initialFocusRef={React.useRef(null)}
       onOpen={onOpen}
       onClose={() => {
-        onClose();
-        setFirstName(user.name.split(" ")[0]);
-        setLastName(user.name.split(" ")[1]);
+        close();
       }}
       placement="right"
     >
@@ -122,9 +128,7 @@ export default function ChangeNameButton({
               <Button
                 variant="outline"
                 onClick={() => {
-                  onClose();
-                  setFirstName(user.name.split(" ")[0]);
-                  setLastName(user.name.split(" ")[1]);
+                  close();
                 }}
                 colorScheme="purple"
               >

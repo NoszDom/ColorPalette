@@ -37,7 +37,6 @@ export default function LoginForm({
   const toast = useToast();
 
   function onSubmit(values: any) {
-
     return new Promise((resolve) => {
       if (values.email.length === 0 || values.password.length === 0) {
         toast({
@@ -47,13 +46,16 @@ export default function LoginForm({
         });
       } else {
         setSubmitting(true);
-        loginUser(values.email, values.password, {
-          loggedIn: loggedIn,
-          setLoggedIn: setLoggedIn,
-          setUser: setUser,
-          setToken: setToken,
-        },
-        setSubmitting,
+        loginUser(
+          values.email,
+          values.password,
+          {
+            loggedIn: loggedIn,
+            setLoggedIn: setLoggedIn,
+            setUser: setUser,
+            setToken: setToken,
+          },
+          setSubmitting
         );
       }
       //@ts-ignore
@@ -65,7 +67,7 @@ export default function LoginForm({
     email: string,
     password: string,
     { loggedIn, setLoggedIn, setUser, setToken }: LoginFormParams,
-    setSubmitting: React.Dispatch<React.SetStateAction<boolean>>,
+    setSubmitting: React.Dispatch<React.SetStateAction<boolean>>
   ) {
     if (!loggedIn) {
       axios
@@ -81,7 +83,7 @@ export default function LoginForm({
 
           configAxios({ setLoggedIn: setLoggedIn });
           setLoggedIn(true);
-          
+
           setSubmitting(false);
         })
         .catch(() => {
@@ -90,7 +92,7 @@ export default function LoginForm({
             title: "Wrong e-mail address or password!",
             isClosable: true,
           });
-          
+
           setSubmitting(false);
         });
     }

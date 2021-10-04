@@ -5,19 +5,19 @@ import PageLinks from "./PageLinks";
 import Profile from "./Profile";
 
 export interface NavBarParams {
-  name: string;
-  columns: number;
+  name?: string;
+  isLoggedIn: boolean;
 }
 
-export default function Navbar({ name, columns }: NavBarParams) {
+export default function Navbar({ name, isLoggedIn }: NavBarParams) {
   return (
     <Flex h="55px" fontSize="xl" ml={5} mr={5}>
-      <PageLinks columns={columns} />
+      <PageLinks isLoggedIn={isLoggedIn} />
       <Spacer />
       <Center>
         <Wrap>
           <WrapItem>
-            <Profile name={name} />
+            <Profile isLoggedIn={isLoggedIn} name={name ? name : undefined} />
           </WrapItem>
           <WrapItem>
             <ColorModeSwitcher />

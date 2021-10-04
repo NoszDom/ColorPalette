@@ -6,7 +6,7 @@ import { Option } from "../models/Option";
 import { getPalettes } from "../network/Requests";
 
 export interface BrowseParams {
-  userId: number;
+  userId?: number;
 }
 
 export default function BrowsePage({ userId }: BrowseParams) {

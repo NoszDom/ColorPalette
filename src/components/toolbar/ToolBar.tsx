@@ -17,13 +17,14 @@ import {
   FormLabel,
   Input,
   Divider,
+  Text,
 } from "@chakra-ui/react";
 import Generator from "./Generator";
 import axios from "axios";
 import { targetApiUrl } from "../../network/Config";
 
 export interface ToolBarParams {
-  userId: number;
+  userId?: number;
   colors: Array<string>;
   setColors: React.Dispatch<React.SetStateAction<Array<string>>>;
 }
@@ -32,6 +33,7 @@ export default function ToolBar({ userId, colors, setColors }: ToolBarParams) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [paletteName, setPaletteName] = React.useState<string>("");
   const toast = useToast();
+  const ref = React.useRef(null);
 
   async function savePalette() {
     if (paletteName === "") {
@@ -57,59 +59,67 @@ export default function ToolBar({ userId, colors, setColors }: ToolBarParams) {
         });
     }
   }
+  console.log(userId);
+  if (!!userId) {
+    return (
+      <Flex h="55px" fontSize="xl" ml={5} mr={5}>
+        <Generator colors={colors} setColors={setColors} />
+        <Spacer />
+        <Center>
+          <Button colorScheme="purple" onClick={onOpen}>
+            Save & share
+          </Button>
+        </Center>
+        <Modal
+          isOpen={isOpen}
+          onClose={() => {
+            onClose();
+            setPaletteName("");
+          }}
+          size="xs"
+        >
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Name your palette:</ModalHeader>
+            <ModalCloseButton />
+            <Divider />
+            <ModalBody>
+              <FormControl>
+                <FormLabel htmlFor="name">Enter the name here:</FormLabel>
+                <Input
+                  ref={ref}
+                  id="name"
+                  value={paletteName}
+                  onChange={(e) => setPaletteName(e.target.value)}
+                />
+              </FormControl>
+            </ModalBody>
 
-  return (
-    <Flex h="55px" fontSize="xl" ml={5} mr={5}>
-      <Generator colors={colors} setColors={setColors} />
-      <Spacer />
-      <Center>
-        <Button colorScheme="purple" onClick={onOpen}>
-          Save
-        </Button>
-      </Center>
-      <Modal
-        isOpen={isOpen}
-        onClose={() => {
-          onClose();
-          setPaletteName("");
-        }}
-        size="xs"
-      >
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Name your palette:</ModalHeader>
-          <ModalCloseButton />
-          <Divider />
-          <ModalBody>
-            <FormControl>
-              <FormLabel htmlFor="name">Enter the name here:</FormLabel>
-              <Input
-                ref={React.useRef(null)}
-                id="name"
-                value={paletteName}
-                onChange={(e) => setPaletteName(e.target.value)}
-              />
-            </FormControl>
-          </ModalBody>
-
-          <ModalFooter>
-            <Button
-              colorScheme="purple"
-              mr={3}
-              onClick={() => {
-                onClose();
-                setPaletteName("");
-              }}
-              variant="outline"
-            >
-              Cancel
-            </Button>
-            <Button colorScheme="purple" onClick={() => savePalette()}>
-              Save
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </Flex>
-  );
+            <ModalFooter>
+              <Button
+                colorScheme="purple"
+                mr={3}
+                onClick={() => {
+                  onClose();
+                  setPaletteName("");
+                }}
+                variant="outline"
+              >
+                Cancel
+              </Button>
+              <Button colorScheme="purple" onClick={() => savePalette()}>
+                Save
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      </Flex>
+    );
+  } else {
+    return (
+      <Flex h="55px" fontSize="xl" ml={5} mr={5}>
+        <Generator colors={colors} setColors={setColors} />
+      </Flex>
+    );
+  }
 }

@@ -8,11 +8,7 @@ export interface loadParams {
   setToken: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export default function load({
-  setLoggedIn,
-  setUser,
-  setToken,
-}: loadParams) {
+export default function load({ setLoggedIn, setUser, setToken }: loadParams) {
   const token: string | null = localStorage.getItem("token");
   if (token === null || token === "") return;
   else if (!isValidToken(token)) return;

@@ -32,7 +32,9 @@ export default function ChangeEmailButton({
   setUser,
 }: ChangeEmailButtonParams) {
   const { onOpen, onClose, isOpen } = useDisclosure();
-  const [email, setEmail] = React.useState<string>(user.email);
+  const [email, setEmail] = React.useState<string>(
+    user.email ? user.email : ""
+  );
   const toast = useToast();
 
   function clickSave() {
@@ -66,14 +68,18 @@ export default function ChangeEmailButton({
     }
   }
 
+  function close() {
+    onClose();
+    if (user.email) setEmail(user.email);
+  }
+
   return (
     <Popover
       isOpen={isOpen}
       initialFocusRef={React.useRef(null)}
       onOpen={onOpen}
       onClose={() => {
-        onClose();
-        setEmail(user.email);
+        close();
       }}
       placement="right"
     >
@@ -108,8 +114,7 @@ export default function ChangeEmailButton({
               <Button
                 variant="outline"
                 onClick={() => {
-                  onClose();
-                  setEmail(user.email);
+                  close();
                 }}
                 colorScheme="purple"
               >

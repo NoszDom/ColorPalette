@@ -18,9 +18,9 @@ import load from "./storage/Load";
 
 export default function App() {
   const [currentUser, setCurrentUser] = React.useState<User>({
-    id: -1,
-    name: "",
-    email: "",
+    id: undefined,
+    name: undefined,
+    email: undefined,
   });
 
   const [token, setToken] = React.useState<string>("");
@@ -42,33 +42,33 @@ export default function App() {
   if (loggedIn && loaded) {
     return (
       <Router>
-        <NavBar name={currentUser.name} columns={4} />
+        <NavBar name={currentUser!.name} isLoggedIn={true} />
         <Divider />
         <Switch>
-          <Route exact path="/">
-            <Redirect to="/generator" />
-          </Route>
           <Route exact path="/login">
             <Redirect to="/generator" />
           </Route>
           <Route exact path="/generator">
-            <GeneratorPage userId={currentUser.id} />
+            <GeneratorPage userId={currentUser!.id} />
           </Route>
           <Route exact path="/browse">
-            <BrowsePage userId={currentUser.id} />
+            <BrowsePage userId={currentUser!.id} />
           </Route>
           <Route exact path="/saved">
-            <SavedPage userId={currentUser.id} />
+            <SavedPage userId={currentUser!.id} />
           </Route>
           <Route exact path="/own">
-            <OwnPage userId={currentUser.id} />
+            <OwnPage userId={currentUser!.id} />
           </Route>
           <Route exact path="/myprofile">
             <ProfilePage
-              user={currentUser}
+              user={currentUser!}
               setUser={setCurrentUser}
               setLoggedIn={setLoggedIn}
             />
+          </Route>
+          <Route path="/">
+            <Redirect to="/generator" />
           </Route>
         </Switch>
       </Router>
@@ -76,9 +76,8 @@ export default function App() {
   } else if (loaded) {
     return (
       <Router>
-        <Route path="/">
-          <Redirect to="/login" />
-        </Route>
+        <NavBar isLoggedIn={false} />
+        <Divider />
         <Route exact path="/login">
           <LoginPage
             loggedIn={loggedIn}
@@ -86,6 +85,15 @@ export default function App() {
             setUser={setCurrentUser}
             setToken={setToken}
           />
+        </Route>
+        <Route exact path="/generator">
+          <GeneratorPage />
+        </Route>
+        <Route exact path="/browse">
+          <BrowsePage />
+        </Route>
+        <Route path="/">
+          <Redirect to="/login" />
         </Route>
       </Router>
     );

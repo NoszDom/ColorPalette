@@ -6,7 +6,7 @@ import { Option } from "../../models/Option";
 import PaletteSorter from "./PaletteSorter";
 
 export interface PaletteCollectionParams {
-  userId: number;
+  userId?: number;
   routeBase: string;
   paletteArray: Array<ColorPalette>;
   setPaletteArray: React.Dispatch<React.SetStateAction<Array<ColorPalette>>>;
@@ -30,7 +30,7 @@ export default function PaletteCollection({
         orderOptions={orderOptions}
         sortOptions={sortOptions}
       ></PaletteSorter>
-      <Divider/>
+      <Divider />
       <Wrap spacing="30px" justify="center" p={7}>
         {paletteArray.map((palette: ColorPalette, index: number) => {
           return (

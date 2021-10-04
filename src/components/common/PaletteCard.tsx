@@ -6,7 +6,7 @@ import { ColorPalette as Palette } from "../../models/ColorPalette";
 
 export interface PaletteCardParams {
   palette: Palette;
-  userId: number;
+  userId?: number;
 }
 
 export default function PaletteCard({ palette, userId }: PaletteCardParams) {
@@ -18,11 +18,7 @@ export default function PaletteCard({ palette, userId }: PaletteCardParams) {
         fontSize="xs"
       />
       <Divider />
-      <PaletteFooter
-        height="35px"
-        userId = {userId}
-        palette = {palette}
-      />
+      <PaletteFooter height="35px" userId={userId} palette={palette} />
     </Box>
   );
 }

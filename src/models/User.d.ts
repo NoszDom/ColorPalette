@@ -1,10 +1,10 @@
 export type User = {
-    id: number;
-    name: string;
-    email: string;
-}
+  id?: number;
+  name?: string;
+  email?: string;
+};
 
-export type LoggedInUser ={
+export type LoggedInUser = {
   user: User;
   token: string;
-}
+};

@@ -23,7 +23,11 @@ export interface ProfileParams {
   setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function ProfilePage({ user, setUser, setLoggedIn }: ProfileParams) {
+export default function ProfilePage({
+  user,
+  setUser,
+  setLoggedIn,
+}: ProfileParams) {
   return (
     <VStack w="100%" h="calc(100% - 56px)" overflowY="auto" padding="20px">
       <Avatar name={user.name} size="2xl" mb="30px">

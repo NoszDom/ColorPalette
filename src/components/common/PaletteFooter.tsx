@@ -16,7 +16,7 @@ import { targetApiUrl } from "../../network/Config";
 export interface FooterParams {
   height: string;
   palette: ColorPalette;
-  userId: number;
+  userId?: number;
 }
 
 export default function PaletteFooter({
@@ -90,7 +90,7 @@ export default function PaletteFooter({
       <Flex h={height} align="center" ml={3} mr={2} overflow="hidden">
         <Heading size="sm">{palette.name}</Heading>
         <Spacer />
-        {button}
+        {userId ? null : button}
       </Flex>
     </Tooltip>
   );
