@@ -33,20 +33,23 @@ export default function BrowsePage({ userId }: BrowseParams) {
     { text: "Maximum saves", value: "max-saves" },
   ];
 
+  const url =
+    userId === undefined ? "/colorpalettes?" : "/colorpalettes/" + userId + "?";
+
   React.useEffect(() => {
     getPalettes({
-      route: "/colorpalettes/" + userId,
+      route: url,
       loaded: loaded,
       setLoaded: setLoaded,
       setPalettes: setPalettes,
     });
-  }, [loaded]);
+  }, [loaded, url]);
 
   if (loaded) {
     return (
       <Box w="100%" h="calc(100% - 56px)" overflowY="auto" overflowX="hidden">
         <PaletteCollection
-          routeBase={"/colorpalettes/" + userId + "?"}
+          routeBase={url}
           paletteArray={palettes}
           setPaletteArray={setPalettes}
           userId={userId}

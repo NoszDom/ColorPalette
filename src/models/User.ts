@@ -1,10 +1,10 @@
-export type User = {
+export interface User {
   id?: number;
   name?: string;
   email?: string;
-};
+}
 
-export type LoggedInUser = {
+export interface LoggedInUser {
   user: User;
   token: string;
-};
+}

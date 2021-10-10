@@ -14,7 +14,7 @@ import {
   Redirect,
 } from "react-router-dom";
 import { User } from "./models/User";
-import load from "./storage/Load";
+import { load } from "./services/storage";
 
 export default function App() {
   const [currentUser, setCurrentUser] = React.useState<User>({

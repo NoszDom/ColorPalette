@@ -7,34 +7,37 @@ import {
   Button,
   useToast,
 } from "@chakra-ui/react";
-import { User, LoggedInUser } from "../../models/User";
 import { useForm } from "react-hook-form";
-import { targetApiUrl } from "../../network/Config";
-import axios from "axios";
-import save from "../../storage/Save";
-import { configAxios } from "../../network/Config";
-
-export interface LoginFormParams {
-  loggedIn: boolean;
-  setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
-  setUser: React.Dispatch<React.SetStateAction<User>>;
-  setToken: React.Dispatch<React.SetStateAction<string>>;
-}
+import { loginUser } from "../../services/authentication";
+import { useEffect } from "react";
+import { FormParams } from "../../models/FormParams";
 
 export default function LoginForm({
   loggedIn,
   setLoggedIn,
   setUser,
   setToken,
-}: LoginFormParams) {
+}: FormParams) {
   const { handleSubmit, setValue } = useForm<{
     email: string;
     password: string;
   }>();
 
   const [submitting, setSubmitting] = React.useState<boolean>(false);
+  const [error, setError] = React.useState<boolean>(false);
 
   const toast = useToast();
+
+  useEffect(() => {
+    if (error === true) {
+      toast({
+        status: "error",
+        title: "Wrong e-mail address or password!",
+        isClosable: true,
+      });
+      setError(false);
+    }
+  }, [error, toast]);
 
   function onSubmit(values: any) {
     return new Promise((resolve) => {
@@ -55,47 +58,12 @@ export default function LoginForm({
             setUser: setUser,
             setToken: setToken,
           },
-          setSubmitting
+          setSubmitting,
+          setError
         );
       }
-      //@ts-ignore
-      resolve();
+      resolve(null);
     });
-  }
-
-  async function loginUser(
-    email: string,
-    password: string,
-    { loggedIn, setLoggedIn, setUser, setToken }: LoginFormParams,
-    setSubmitting: React.Dispatch<React.SetStateAction<boolean>>
-  ) {
-    if (!loggedIn) {
-      axios
-        .post(targetApiUrl + "/users/login", {
-          email: email,
-          password: password,
-        })
-        .then((response) => {
-          const loggedInUser: LoggedInUser = response.data;
-          setUser(loggedInUser.user);
-          setToken(loggedInUser.token);
-          save({ user: loggedInUser.user, token: loggedInUser.token });
-
-          configAxios({ setLoggedIn: setLoggedIn });
-          setLoggedIn(true);
-
-          setSubmitting(false);
-        })
-        .catch(() => {
-          toast({
-            status: "error",
-            title: "Wrong e-mail address or password!",
-            isClosable: true,
-          });
-
-          setSubmitting(false);
-        });
-    }
   }
 
   return (

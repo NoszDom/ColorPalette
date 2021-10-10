@@ -90,7 +90,7 @@ export default function PaletteFooter({
       <Flex h={height} align="center" ml={3} mr={2} overflow="hidden">
         <Heading size="sm">{palette.name}</Heading>
         <Spacer />
-        {userId ? null : button}
+        {userId === undefined ? null : button}
       </Flex>
     </Tooltip>
   );

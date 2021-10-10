@@ -16,6 +16,7 @@ import ChangePicButton from "../components/profile/ChangePicButton";
 import ChangeNameButton from "../components/profile/ChangeNameButton";
 import ChangeEmailButton from "../components/profile/ChangeEmailButton";
 import ChangePwButton from "../components/profile/ChangePwButton";
+import { logoutUser } from "../services/authentication";
 
 export interface ProfileParams {
   user: User;
@@ -67,9 +68,7 @@ export default function ProfilePage({
           alignSelf="center"
           variant="outline"
           onClick={() => {
-            localStorage.removeItem("user");
-            localStorage.removeItem("token");
-            setLoggedIn(false);
+            logoutUser(setLoggedIn);
           }}
         >
           Log out

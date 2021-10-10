@@ -59,7 +59,7 @@ export default function ToolBar({ userId, colors, setColors }: ToolBarParams) {
         });
     }
   }
-  console.log(userId);
+
   if (!!userId) {
     return (
       <Flex h="55px" fontSize="xl" ml={5} mr={5}>

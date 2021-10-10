@@ -8,11 +8,17 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
-import { targetApiUrl } from "../../network/Config";
-import axios from "axios";
+import { createUser } from "../../services/authentication";
+import { useEffect, useState } from "react";
+import { FormParams } from "../../models/FormParams";
 
-export default function LoginForms() {
-  const { handleSubmit, formState, setValue } = useForm<{
+export default function RegisterForm({
+  loggedIn,
+  setLoggedIn,
+  setUser,
+  setToken,
+}: FormParams) {
+  const { handleSubmit, setValue } = useForm<{
     firstName: string;
     lastName: string;
     email: string;
@@ -20,7 +26,21 @@ export default function LoginForms() {
     passwordAgain: string;
   }>();
 
+  const [submitting, setSubmitting] = React.useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
   const toast = useToast();
+
+  useEffect(() => {
+    if (error === true) {
+      toast({
+        status: "error",
+        title: "User already exists!",
+        isClosable: true,
+      });
+      setError(false);
+    }
+  }, [error, toast]);
 
   function onSubmit(values: any) {
     return new Promise((resolve) => {
@@ -43,31 +63,18 @@ export default function LoginForms() {
           isClosable: true,
         });
       } else {
+        setSubmitting(true);
         createUser(
           values.firstName + " " + values.lastName,
           values.email,
-          values.password
+          values.password,
+          { loggedIn, setLoggedIn, setUser, setToken },
+          setSubmitting,
+          setError
         );
       }
-      //@ts-ignore
-      resolve();
+      resolve(null);
     });
-  }
-
-  async function createUser(name: string, email: string, password: string) {
-    axios
-      .post(targetApiUrl + "/users/", {
-        name: name,
-        email: email,
-        password: password,
-      })
-      .then(() => {
-        toast({
-          status: "success",
-          title: "User registered successfully",
-          isClosable: true,
-        });
-      });
   }
 
   return (
@@ -115,7 +122,7 @@ export default function LoginForms() {
           mt={4}
           colorScheme="purple"
           type="submit"
-          isLoading={formState.isSubmitting}
+          isLoading={submitting}
         >
           Register
         </Button>

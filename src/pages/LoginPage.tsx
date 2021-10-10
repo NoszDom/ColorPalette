@@ -48,7 +48,12 @@ export default function LoginPage({
               />
             </TabPanel>
             <TabPanel>
-              <RegisterForm />
+              <RegisterForm
+                loggedIn={loggedIn}
+                setLoggedIn={setLoggedIn}
+                setUser={setUser}
+                setToken={setToken}
+              />
             </TabPanel>
           </TabPanels>
         </Tabs>
