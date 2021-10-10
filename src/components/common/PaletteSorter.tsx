@@ -1,8 +1,16 @@
 import * as React from "react";
-import { Button, Text, Select, HStack, Input } from "@chakra-ui/react";
+import {
+  Button,
+  Text,
+  Select,
+  HStack,
+  Input,
+  useToast,
+} from "@chakra-ui/react";
 import { ColorPalette } from "../../models/ColorPalette";
 import { Option } from "../../models/Option";
 import { getPalettes } from "../../network/Requests";
+import { useEffect } from "react";
 
 export interface PaletteSorterParams {
   routeBase: string;
@@ -21,6 +29,20 @@ export default function PaletteSorter({
   const [sortBy, setSortBy] = React.useState<string>("");
   const [sortValue, setSortValue] = React.useState<string>("");
   const [inputType, setInputType] = React.useState<string>("text");
+  const [error, setError] = React.useState<boolean>(false);
+
+  const toast = useToast();
+
+  useEffect(() => {
+    if (error === true) {
+      toast({
+        status: "error",
+        title: "Cannot get palettes",
+        isClosable: true,
+      });
+      setError(false);
+    }
+  }, [error, toast]);
 
   async function updatePalettes() {
     if (orderBy === "" && sortBy === "") return;
@@ -33,6 +55,7 @@ export default function PaletteSorter({
     getPalettes({
       route: route,
       setPalettes: setPalettes,
+      setError: setError,
     });
   }
 

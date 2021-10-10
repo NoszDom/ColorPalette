@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Box, Center, Spinner } from "@chakra-ui/react";
+import { Box, Center, Spinner, useToast } from "@chakra-ui/react";
 import PaletteCollection from "../components/common/PaletteCollection";
 import { ColorPalette } from "../models/ColorPalette";
 import { Option } from "../models/Option";
@@ -23,6 +23,20 @@ export default function BrowsePage({ userId }: BrowseParams) {
   ];
 
   const sortOptions: Array<Option> = [{ text: "Palette name", value: "name" }];
+  const [error, setError] = React.useState<boolean>(false);
+
+  const toast = useToast();
+
+  React.useEffect(() => {
+    if (error === true) {
+      toast({
+        status: "error",
+        title: "Cannot get palettes",
+        isClosable: true,
+      });
+      setError(false);
+    }
+  }, [error, toast]);
 
   React.useEffect(() => {
     getPalettes({
@@ -30,8 +44,9 @@ export default function BrowsePage({ userId }: BrowseParams) {
       loaded: loaded,
       setLoaded: setLoaded,
       setPalettes: setPalettes,
+      setError: setError,
     });
-  }, [loaded]);
+  }, [loaded, userId]);
 
   if (loaded) {
     return (

@@ -1,9 +1,10 @@
 import * as React from "react";
-import { Box, Center, Spinner } from "@chakra-ui/react";
+import { Box, Center, Spinner, useToast } from "@chakra-ui/react";
 import PaletteCollection from "../components/common/PaletteCollection";
 import { ColorPalette } from "../models/ColorPalette";
 import { Option } from "../models/Option";
 import { getPalettes } from "../network/Requests";
+import { useEffect } from "react";
 
 export interface BrowseParams {
   userId?: number;
@@ -29,14 +30,30 @@ export default function BrowsePage({ userId }: BrowseParams) {
     { text: "Creator name", value: "creator" },
   ];
 
+  const [error, setError] = React.useState<boolean>(false);
+
+  const toast = useToast();
+
+  useEffect(() => {
+    if (error === true) {
+      toast({
+        status: "error",
+        title: "Cannot get palettes",
+        isClosable: true,
+      });
+      setError(false);
+    }
+  }, [error, toast]);
+
   React.useEffect(() => {
     getPalettes({
       route: "/colorpalettes/" + userId + "/saved",
       loaded: loaded,
       setLoaded: setLoaded,
       setPalettes: setPalettes,
+      setError: setError,
     });
-  }, [loaded]);
+  }, [loaded, userId]);
 
   if (loaded) {
     return (

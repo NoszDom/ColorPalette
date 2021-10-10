@@ -7,9 +7,14 @@ import { ColorPalette as Palette } from "../../models/ColorPalette";
 export interface PaletteCardParams {
   palette: Palette;
   userId?: number;
+  setRefreshPalettes: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function PaletteCard({ palette, userId }: PaletteCardParams) {
+export default function PaletteCard({
+  palette,
+  userId,
+  setRefreshPalettes,
+}: PaletteCardParams) {
   return (
     <Box w="300px" h="200px" borderRadius="xl" border="1px" overflow="hidden">
       <ColorPalette
@@ -18,7 +23,12 @@ export default function PaletteCard({ palette, userId }: PaletteCardParams) {
         fontSize="xs"
       />
       <Divider />
-      <PaletteFooter height="35px" userId={userId} palette={palette} />
+      <PaletteFooter
+        setRefreshPalettes={setRefreshPalettes}
+        height="35px"
+        userId={userId}
+        palette={palette}
+      />
     </Box>
   );
 }

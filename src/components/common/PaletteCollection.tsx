@@ -4,6 +4,8 @@ import PaletteCard from "./PaletteCard";
 import { ColorPalette } from "../../models/ColorPalette";
 import { Option } from "../../models/Option";
 import PaletteSorter from "./PaletteSorter";
+import { useEffect, useState } from "react";
+import { getPalettes } from "../../network/Requests";
 
 export interface PaletteCollectionParams {
   userId?: number;
@@ -22,6 +24,18 @@ export default function PaletteCollection({
   orderOptions,
   sortOptions,
 }: PaletteCollectionParams) {
+  const [refreshPalettes, setRefreshPalettes] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (refreshPalettes === true) {
+      getPalettes({
+        route: routeBase,
+        setPalettes: setPaletteArray,
+      });
+      setRefreshPalettes(false);
+    }
+  }, [refreshPalettes, routeBase, setPaletteArray]);
+
   return (
     <Box w="100%" h="100%">
       <PaletteSorter
@@ -35,7 +49,11 @@ export default function PaletteCollection({
         {paletteArray.map((palette: ColorPalette, index: number) => {
           return (
             <WrapItem key={index}>
-              <PaletteCard palette={palette} userId={userId} />
+              <PaletteCard
+                setRefreshPalettes={setRefreshPalettes}
+                palette={palette}
+                userId={userId}
+              />
             </WrapItem>
           );
         })}

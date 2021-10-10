@@ -22,19 +22,13 @@ export default function App() {
     name: undefined,
     email: undefined,
   });
-
   const [token, setToken] = React.useState<string>("");
-
   const [loggedIn, setLoggedIn] = React.useState<boolean>(false);
   const [loaded, setLoaded] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     if (!loggedIn) {
-      load({
-        setLoggedIn: setLoggedIn,
-        setUser: setCurrentUser,
-        setToken: setToken,
-      });
+      load(setLoggedIn, setCurrentUser, setToken);
       setLoaded(true);
     }
   }, [loggedIn]);

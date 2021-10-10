@@ -17,7 +17,7 @@ import {
   FormLabel,
   Input,
   Divider,
-  Text,
+  Spinner,
 } from "@chakra-ui/react";
 import Generator from "./Generator";
 import axios from "axios";
@@ -32,10 +32,12 @@ export interface ToolBarParams {
 export default function ToolBar({ userId, colors, setColors }: ToolBarParams) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [paletteName, setPaletteName] = React.useState<string>("");
+  const [submitting, setSubmitting] = React.useState<boolean>(false);
   const toast = useToast();
   const ref = React.useRef(null);
 
   async function savePalette() {
+    setSubmitting(true);
     if (paletteName === "") {
       toast({
         status: "error",
@@ -51,6 +53,8 @@ export default function ToolBar({ userId, colors, setColors }: ToolBarParams) {
         })
         .then(() => {
           onClose();
+          setPaletteName("");
+          setSubmitting(false);
           toast({
             status: "success",
             title: paletteName + " saved!",
@@ -96,20 +100,28 @@ export default function ToolBar({ userId, colors, setColors }: ToolBarParams) {
             </ModalBody>
 
             <ModalFooter>
-              <Button
-                colorScheme="purple"
-                mr={3}
-                onClick={() => {
-                  onClose();
-                  setPaletteName("");
-                }}
-                variant="outline"
-              >
-                Cancel
-              </Button>
-              <Button colorScheme="purple" onClick={() => savePalette()}>
-                Save
-              </Button>
+              {submitting ? (
+                <Center width="100%" height="30px">
+                  <Spinner size="md"></Spinner>
+                </Center>
+              ) : (
+                <>
+                  <Button
+                    colorScheme="purple"
+                    mr={3}
+                    onClick={() => {
+                      onClose();
+                      setPaletteName("");
+                    }}
+                    variant="outline"
+                  >
+                    Cancel
+                  </Button>
+                  <Button colorScheme="purple" onClick={savePalette}>
+                    Save
+                  </Button>
+                </>
+              )}
             </ModalFooter>
           </ModalContent>
         </Modal>
