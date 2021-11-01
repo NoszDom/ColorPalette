@@ -1,16 +1,8 @@
 import * as React from "react";
+import "../../styles.css";
 import {
   IconButton,
-  Slider,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
-  NumberDecrementStepper,
-  NumberIncrementStepper,
   Text,
-  SliderTrack,
-  SliderFilledTrack,
-  SliderThumb,
   Popover,
   PopoverBody,
   PopoverTrigger,
@@ -23,11 +15,19 @@ import {
   Flex,
   Spacer,
   Input,
+  VStack,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
+  Center,
 } from "@chakra-ui/react";
 import { CgColorPicker } from "react-icons/cg";
 import hexRgb from "hex-rgb";
 import rgbHex from "rgb-hex";
 import hexColorRegex from "hex-color-regex";
+import { HexColorPicker } from "react-colorful";
 
 export interface ColorPickerParams {
   textColor: string;
@@ -46,17 +46,45 @@ export default function ColorPickerPopUp({
     hexRgb(colors[index], { format: "array" })
   );
   const [hex, setHex] = React.useState<string>(colors[index]);
+  const [inputHex, setInputHex] = React.useState<string>(colors[index]);
 
   React.useEffect(() => {
+    setHex(colors[index]);
+    setInputHex(colors[index]);
     setRgb(hexRgb(colors[index], { format: "array" }));
-    setHex(colors[index]);
-  }, [colors[index]]);
+    console.log("haho");
+  }, [colors, index]);
 
-  function rgbChanged() {
-    const tmp = colors;
-    tmp[index] = "#" + rgbHex(rgb[0], rgb[1], rgb[2]);
+  function hexChanged(value: string) {
+    setHex(value);
+    setInputHex(value);
+    setRgb(hexRgb(value, { format: "array" }));
+    let tmp = colors;
+    tmp[index] = value;
     setColors!(tmp);
-    setHex(colors[index]);
+  }
+
+  function inputHexChanged(input: string) {
+    setInputHex(input);
+    if (
+      (input.length === 4 || input.length === 7) &&
+      hexColorRegex({ strict: true }).test(input)
+    )
+      hexChanged(input);
+  }
+
+  function rgbChanged(value: number, ix: number) {
+    if (isNaN(value)) value = 0;
+    if (value < 0 || value > 255) return;
+    let tmp = rgb;
+    tmp[ix] = value;
+    setRgb(tmp);
+    const inHex = "#" + rgbHex(tmp[0], tmp[1], tmp[2]);
+    setHex(inHex);
+    setInputHex(inHex);
+    let cTmp = colors;
+    cTmp[index] = inHex;
+    setColors!(cTmp);
   }
 
   return (
@@ -77,138 +105,58 @@ export default function ColorPickerPopUp({
         <PopoverHeader fontWeight="bold">Pick a color!</PopoverHeader>
         <PopoverBody pr="20px" pl="20px">
           <Stack>
-            <Flex alignItems="center">
-              <Text fontWeight="bold">Red</Text>
-              <Spacer />
-              <NumberInput
-                value={rgb[0]}
-                min={0}
-                max={255}
-                size="sm"
-                onChange={(value) => {
-                  setRgb([+value, rgb[1], rgb[2]]);
-                  rgbChanged();
-                }}
-              >
-                <NumberInputField width="75px" />
-                <NumberInputStepper>
-                  <NumberIncrementStepper />
-                  <NumberDecrementStepper />
-                </NumberInputStepper>
-              </NumberInput>
-            </Flex>
-            <Slider
-              aria-label="slider-red"
-              value={rgb[0]}
-              min={0}
-              max={255}
-              step={1}
-              onChange={(value) => {
-                setRgb([+value, rgb[1], rgb[2]]);
-                rgbChanged();
-              }}
-            >
-              <SliderTrack h="12px" bgGradient="linear(to-r, #000000, #ff0000)">
-                <SliderFilledTrack bgColor="transparent" />
-              </SliderTrack>
-              <SliderThumb h="20px" w="20px" />
-            </Slider>
-
-            <Flex alignItems="center">
-              <Text fontWeight="bold">Green</Text>
-              <Spacer />
-              <NumberInput
-                value={rgb[1]}
-                min={0}
-                max={255}
-                size="sm"
-                onChange={(value) => {
-                  setRgb([rgb[0], +value, rgb[2]]);
-                  rgbChanged();
-                }}
-              >
-                <NumberInputField width="75px" />
-                <NumberInputStepper>
-                  <NumberIncrementStepper />
-                  <NumberDecrementStepper />
-                </NumberInputStepper>
-              </NumberInput>
-            </Flex>
-            <Slider
-              aria-label="slider-green"
-              value={rgb[1]}
-              min={0}
-              max={255}
-              step={1}
-              onChange={(value) => {
-                setRgb([rgb[0], +value, rgb[2]]);
-                rgbChanged();
-              }}
-            >
-              <SliderTrack h="12px" bgGradient="linear(to-r, #000000, #00ff00)">
-                <SliderFilledTrack bgColor="transparent" />
-              </SliderTrack>
-              <SliderThumb h="20px" w="20px" />
-            </Slider>
-
-            <Flex alignItems="center">
-              <Text fontWeight="bold">Blue</Text>
-              <Spacer />
-              <NumberInput
-                value={rgb[2]}
-                min={0}
-                max={255}
-                size="sm"
-                onChange={(value) => {
-                  setRgb([rgb[0], rgb[1], +value]);
-                  rgbChanged();
-                }}
-              >
-                <NumberInputField width="75px" />
-                <NumberInputStepper>
-                  <NumberIncrementStepper />
-                  <NumberDecrementStepper />
-                </NumberInputStepper>
-              </NumberInput>
-            </Flex>
-            <Slider
-              aria-label="slider-blue"
-              value={rgb[2]}
-              min={0}
-              max={255}
-              step={1}
-              onChange={(value) => {
-                setRgb([rgb[0], rgb[1], +value]);
-                rgbChanged();
-              }}
-            >
-              <SliderTrack h="12px" bgGradient="linear(to-r, #000000, #0000ff)">
-                <SliderFilledTrack bgColor="transparent" />
-              </SliderTrack>
-              <SliderThumb h="20px" w="20px" />
-            </Slider>
+            <div className="custom-colorful">
+              <HexColorPicker
+                color={hex}
+                onChange={hexChanged}
+              ></HexColorPicker>
+            </div>
 
             <HStack spacing={6}>
-              <Text fontWeight="bold">HEX</Text>
+              <Text fontWeight="bold">HEX:</Text>
               <Input
                 w="81px"
                 size="sm"
                 maxLength={7}
-                value={hex}
-                onChange={(e) => {
-                  setHex(e.target.value);
-                  if (
-                    (e.target.value.length === 4 ||
-                      e.target.value.length === 7) &&
-                    hexColorRegex({ strict: true }).test(e.target.value)
-                  ) {
-                    const tmp = colors;
-                    tmp[index] = e.target.value;
-                    setColors!(tmp);
-                  }
-                }}
-                onBlur={() => setHex(colors[index])}
+                value={inputHex}
+                onChange={(e) => inputHexChanged(e.target.value)}
               />
+            </HStack>
+
+            <HStack spacing={6}>
+              <Text fontWeight="bold">RGB:</Text>
+              <HStack spacing={3}>
+                <NumberInput
+                  size="sm"
+                  maxW={12}
+                  min={0}
+                  max={255}
+                  value={rgb[0]}
+                  onChange={(_, value) => rgbChanged(value, 0)}
+                >
+                  <NumberInputField />
+                </NumberInput>
+                <NumberInput
+                  size="sm"
+                  maxW={12}
+                  min={0}
+                  max={255}
+                  value={rgb[1]}
+                  onChange={(_, value) => rgbChanged(value, 1)}
+                >
+                  <NumberInputField />
+                </NumberInput>
+                <NumberInput
+                  size="sm"
+                  maxW={12}
+                  min={0}
+                  max={255}
+                  value={rgb[2]}
+                  onChange={(_, value) => rgbChanged(value, 2)}
+                >
+                  <NumberInputField />
+                </NumberInput>
+              </HStack>
             </HStack>
           </Stack>
         </PopoverBody>

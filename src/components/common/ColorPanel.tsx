@@ -27,7 +27,12 @@ export default function ColorPanel({
   const textColor: string = isTextBlack(colors[index]) ? "black" : "white";
 
   const colorPicker = editable
-    ? ColorPickerPopUp({ textColor: textColor, colors: colors, setColors: setColors, index: index })
+    ? ColorPickerPopUp({
+        textColor: textColor,
+        colors: colors,
+        setColors: setColors,
+        index: index,
+      })
     : null;
 
   return (
@@ -45,11 +50,8 @@ export default function ColorPanel({
 function isTextBlack(color: string) {
   const rgb: Array<number> = hexRgb(color, { format: "array" });
 
-  const textColor = (rgb[0]*299 + rgb[1]*587 + rgb[2]*114) / 1000;
+  const textColor = (rgb[0] * 299 + rgb[1] * 587 + rgb[2] * 114) / 1000;
 
-  const result: boolean =
-    (textColor > 125)
-      ? true
-      : false;
+  const result: boolean = textColor > 125 ? true : false;
   return result;
 }

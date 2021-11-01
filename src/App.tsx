@@ -87,7 +87,7 @@ export default function App() {
           <BrowsePage />
         </Route>
         <Route path="/">
-          <Redirect to="/login" />
+          <Redirect to="/generator" />
         </Route>
       </Router>
     );
