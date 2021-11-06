@@ -1,8 +1,7 @@
 import * as React from "react";
 import { Button, HStack, Select } from "@chakra-ui/react";
 import randomColor from "randomcolor";
-import hexRgb from "hex-rgb";
-import rgbHex from "rgb-hex";
+import convert from "color-convert";
 
 export interface GeneratorParams {
   colors: Array<string>;
@@ -68,9 +67,9 @@ function generateComplementary() {
 }
 
 function getComplementaryColor(hex: string): string {
-  let rgb = hexRgb(hex, { format: "array" });
+  let rgb = convert.hex.rgb(hex);
   rgb[0] = 255 - rgb[0];
   rgb[1] = 255 - rgb[1];
   rgb[2] = 255 - rgb[2];
-  return "#" + rgbHex(rgb[0], rgb[1], rgb[2]);
+  return "#" + convert.rgb.hex(rgb[0], rgb[1], rgb[2]);
 }

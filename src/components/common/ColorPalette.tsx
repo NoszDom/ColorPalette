@@ -8,6 +8,7 @@ export interface ColorPaletteParams {
   fontSize: string;
   editable?: boolean;
   setColors?: React.Dispatch<React.SetStateAction<string[]>>;
+  noText?: boolean;
 }
 
 export default function ColorPalette({
@@ -16,6 +17,7 @@ export default function ColorPalette({
   fontSize,
   editable,
   setColors,
+  noText,
 }: ColorPaletteParams) {
   const h: number = 100;
   const w: number = 100 / colors.length;
@@ -33,6 +35,7 @@ export default function ColorPalette({
             key={index}
             editable={editable}
             setColors={setColors}
+            noText={noText}
           />
         );
       })}

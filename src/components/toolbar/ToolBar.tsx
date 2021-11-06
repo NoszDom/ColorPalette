@@ -22,6 +22,8 @@ import {
 import Generator from "./Generator";
 import axios from "axios";
 import { targetApiUrl } from "../../network/Config";
+import Brightness from "./Brightness";
+import Contrast from "./Contrast";
 
 export interface ToolBarParams {
   userId?: number;
@@ -64,74 +66,73 @@ export default function ToolBar({ userId, colors, setColors }: ToolBarParams) {
     }
   }
 
-  if (!!userId) {
-    return (
-      <Flex h="55px" fontSize="xl" ml={5} mr={5}>
-        <Generator colors={colors} setColors={setColors} />
-        <Spacer />
-        <Center>
-          <Button colorScheme="purple" onClick={onOpen}>
-            Save & share
-          </Button>
-        </Center>
-        <Modal
-          isOpen={isOpen}
-          onClose={() => {
-            onClose();
-            setPaletteName("");
-          }}
-          size="xs"
-        >
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Name your palette:</ModalHeader>
-            <ModalCloseButton />
-            <Divider />
-            <ModalBody>
-              <FormControl>
-                <FormLabel htmlFor="name">Enter the name here:</FormLabel>
-                <Input
-                  ref={ref}
-                  id="name"
-                  value={paletteName}
-                  onChange={(e) => setPaletteName(e.target.value)}
-                />
-              </FormControl>
-            </ModalBody>
+  return (
+    <Flex h="55px" fontSize="xl" ml={5} mr={5} flexWrap="wrap" align="center">
+      <Generator colors={colors} setColors={setColors} />
+      <Brightness colors={colors} setColors={setColors}></Brightness>
+      <Contrast colors={colors} setColors={setColors}></Contrast>
 
-            <ModalFooter>
-              {submitting ? (
-                <Center width="100%" height="30px">
-                  <Spinner size="md"></Spinner>
-                </Center>
-              ) : (
-                <>
-                  <Button
-                    colorScheme="purple"
-                    mr={3}
-                    onClick={() => {
-                      onClose();
-                      setPaletteName("");
-                    }}
-                    variant="outline"
-                  >
-                    Cancel
-                  </Button>
-                  <Button colorScheme="purple" onClick={savePalette}>
-                    Save
-                  </Button>
-                </>
-              )}
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
-      </Flex>
-    );
-  } else {
-    return (
-      <Flex h="55px" fontSize="xl" ml={5} mr={5}>
-        <Generator colors={colors} setColors={setColors} />
-      </Flex>
-    );
-  }
+      {!userId ? null : (
+        <>
+          <Spacer />
+          <Center>
+            <Button colorScheme="purple" onClick={onOpen}>
+              Save & share
+            </Button>
+          </Center>
+          <Modal
+            isOpen={isOpen}
+            onClose={() => {
+              onClose();
+              setPaletteName("");
+            }}
+            size="xs"
+          >
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>Name your palette:</ModalHeader>
+              <ModalCloseButton />
+              <Divider />
+              <ModalBody>
+                <FormControl>
+                  <FormLabel htmlFor="name">Enter the name here:</FormLabel>
+                  <Input
+                    ref={ref}
+                    id="name"
+                    value={paletteName}
+                    onChange={(e) => setPaletteName(e.target.value)}
+                  />
+                </FormControl>
+              </ModalBody>
+
+              <ModalFooter>
+                {submitting ? (
+                  <Center width="100%" height="30px">
+                    <Spinner size="md"></Spinner>
+                  </Center>
+                ) : (
+                  <>
+                    <Button
+                      colorScheme="purple"
+                      mr={3}
+                      onClick={() => {
+                        onClose();
+                        setPaletteName("");
+                      }}
+                      variant="outline"
+                    >
+                      Cancel
+                    </Button>
+                    <Button colorScheme="purple" onClick={savePalette}>
+                      Save
+                    </Button>
+                  </>
+                )}
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
+        </>
+      )}
+    </Flex>
+  );
 }

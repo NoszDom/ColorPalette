@@ -12,20 +12,12 @@ import {
   Stack,
   HStack,
   PopoverHeader,
-  Flex,
-  Spacer,
   Input,
-  VStack,
   NumberInput,
   NumberInputField,
-  NumberInputStepper,
-  NumberIncrementStepper,
-  NumberDecrementStepper,
-  Center,
 } from "@chakra-ui/react";
 import { CgColorPicker } from "react-icons/cg";
-import hexRgb from "hex-rgb";
-import rgbHex from "rgb-hex";
+import convert from "color-convert";
 import hexColorRegex from "hex-color-regex";
 import { HexColorPicker } from "react-colorful";
 
@@ -43,7 +35,7 @@ export default function ColorPickerPopUp({
   index,
 }: ColorPickerParams) {
   const [rgb, setRgb] = React.useState<Array<number>>(
-    hexRgb(colors[index], { format: "array" })
+    convert.hex.rgb(colors[index])
   );
   const [hex, setHex] = React.useState<string>(colors[index]);
   const [inputHex, setInputHex] = React.useState<string>(colors[index]);
@@ -51,14 +43,13 @@ export default function ColorPickerPopUp({
   React.useEffect(() => {
     setHex(colors[index]);
     setInputHex(colors[index]);
-    setRgb(hexRgb(colors[index], { format: "array" }));
-    console.log("haho");
+    setRgb(convert.hex.rgb(colors[index]));
   }, [colors, index]);
 
   function hexChanged(value: string) {
     setHex(value);
     setInputHex(value);
-    setRgb(hexRgb(value, { format: "array" }));
+    setRgb(convert.hex.rgb(value));
     let tmp = colors;
     tmp[index] = value;
     setColors!(tmp);
@@ -79,7 +70,7 @@ export default function ColorPickerPopUp({
     let tmp = rgb;
     tmp[ix] = value;
     setRgb(tmp);
-    const inHex = "#" + rgbHex(tmp[0], tmp[1], tmp[2]);
+    const inHex = "#" + convert.rgb.hex(tmp[0], tmp[1], tmp[2]);
     setHex(inHex);
     setInputHex(inHex);
     let cTmp = colors;
@@ -97,6 +88,7 @@ export default function ColorPickerPopUp({
           fontSize="2xl"
           icon={<CgColorPicker />}
           variant="outline"
+          isRound={true}
         />
       </PopoverTrigger>
       <PopoverContent>

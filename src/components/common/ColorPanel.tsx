@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Center, Heading, VStack } from "@chakra-ui/react";
-import hexRgb from "hex-rgb";
+import convert from "color-convert";
 import ColorPickerPopUp from "./ColorPickerPopUp";
 
 export interface ColorPanelParams {
@@ -11,6 +11,7 @@ export interface ColorPanelParams {
   fontSize: string;
   editable?: boolean;
   setColors?: React.Dispatch<React.SetStateAction<string[]>>;
+  noText?: boolean;
 }
 
 export default function ColorPanel({
@@ -21,10 +22,12 @@ export default function ColorPanel({
   fontSize,
   editable,
   setColors,
+  noText,
 }: ColorPanelParams) {
   const widthString: string = width.toString() + "%";
   const heightString: string = height.toString() + "%";
-  const textColor: string = isTextBlack(colors[index]) ? "black" : "white";
+  const textColor: string =
+    !noText && isTextBlack(colors[index]) ? "black" : "white";
 
   const colorPicker = editable
     ? ColorPickerPopUp({
@@ -38,17 +41,19 @@ export default function ColorPanel({
   return (
     <Center w={widthString} h={heightString} bg={colors[index]}>
       <VStack>
-        <Heading color={textColor} size={fontSize}>
-          {colors[index]}
-        </Heading>
-        {colorPicker}
+        {noText ? null : (
+          <Heading color={textColor} size={fontSize}>
+            {colors[index]}
+          </Heading>
+        )}
+        s{colorPicker}
       </VStack>
     </Center>
   );
 }
 
 function isTextBlack(color: string) {
-  const rgb: Array<number> = hexRgb(color, { format: "array" });
+  const rgb: Array<number> = convert.hex.rgb(color);
 
   const textColor = (rgb[0] * 299 + rgb[1] * 587 + rgb[2] * 114) / 1000;
 
