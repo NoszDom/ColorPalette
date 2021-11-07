@@ -38,11 +38,11 @@ function PalettePreview({
   const { data, loading } = usePalette(imgSrc);
 
   const imgColors = [
-    data.darkMuted,
-    data.muted,
-    data.vibrant,
-    data.lightVibrant,
-    data.lightMuted,
+    data.darkMuted?.toUpperCase(),
+    data.muted?.toUpperCase(),
+    data.vibrant?.toUpperCase(),
+    data.lightVibrant?.toUpperCase(),
+    data.lightMuted?.toUpperCase(),
   ];
 
   if (imgSrc && !loading) {
