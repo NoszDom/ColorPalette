@@ -83,7 +83,7 @@ export default function ToolBar({ userId, colors, setColors }: ToolBarParams) {
           setColors={setColors}
         ></ImgPaletteGenerator>
       </HStack>
-      {!!userId ? null : (
+      {!userId ? null : (
         <>
           <Spacer />
           <Center>
