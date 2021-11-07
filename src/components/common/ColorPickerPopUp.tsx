@@ -15,6 +15,7 @@ import {
   Input,
   NumberInput,
   NumberInputField,
+  Box,
 } from "@chakra-ui/react";
 import { CgColorPicker } from "react-icons/cg";
 import convert from "color-convert";
@@ -47,6 +48,7 @@ export default function ColorPickerPopUp({
   }, [colors, index]);
 
   function hexChanged(value: string) {
+    value = value.toUpperCase();
     setHex(value);
     setInputHex(value);
     setRgb(convert.hex.rgb(value));
@@ -97,12 +99,12 @@ export default function ColorPickerPopUp({
         <PopoverHeader fontWeight="bold">Pick a color!</PopoverHeader>
         <PopoverBody pr="20px" pl="20px">
           <Stack>
-            <div className="custom-colorful">
+            <Box className="custom-colorful">
               <HexColorPicker
                 color={hex}
                 onChange={hexChanged}
               ></HexColorPicker>
-            </div>
+            </Box>
 
             <HStack spacing={6}>
               <Text fontWeight="bold">HEX:</Text>

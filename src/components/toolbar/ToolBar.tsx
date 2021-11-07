@@ -18,12 +18,16 @@ import {
   Input,
   Divider,
   Spinner,
+  HStack,
 } from "@chakra-ui/react";
 import Generator from "./Generator";
 import axios from "axios";
 import { targetApiUrl } from "../../network/Config";
 import Brightness from "./Brightness";
 import Contrast from "./Contrast";
+import Saturation from "./Saturation";
+import Hue from "./Hue";
+import ImgPaletteGenerator from "./ImgPaletteGenerator";
 
 export interface ToolBarParams {
   userId?: number;
@@ -68,11 +72,18 @@ export default function ToolBar({ userId, colors, setColors }: ToolBarParams) {
 
   return (
     <Flex h="55px" fontSize="xl" ml={5} mr={5} flexWrap="wrap" align="center">
-      <Generator colors={colors} setColors={setColors} />
-      <Brightness colors={colors} setColors={setColors}></Brightness>
-      <Contrast colors={colors} setColors={setColors}></Contrast>
-
-      {!userId ? null : (
+      <HStack spacing={4}>
+        <Generator colors={colors} setColors={setColors} />
+        <Brightness colors={colors} setColors={setColors}></Brightness>
+        <Contrast colors={colors} setColors={setColors}></Contrast>
+        <Saturation colors={colors} setColors={setColors}></Saturation>
+        <Hue colors={colors} setColors={setColors}></Hue>
+        <ImgPaletteGenerator
+          colors={colors}
+          setColors={setColors}
+        ></ImgPaletteGenerator>
+      </HStack>
+      {!!userId ? null : (
         <>
           <Spacer />
           <Center>

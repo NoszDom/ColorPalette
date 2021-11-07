@@ -18,6 +18,7 @@ import {
   SliderTrack,
   SliderFilledTrack,
   HStack,
+  Tooltip,
 } from "@chakra-ui/react";
 import {
   RiContrastFill,
@@ -61,15 +62,17 @@ export default function Contrast({ colors, setColors }: ContrastParams) {
 
   return (
     <>
-      <IconButton
-        aria-label="Pick a color"
-        size="md"
-        fontSize="2xl"
-        icon={<RiContrastFill />}
-        variant="ghost"
-        isRound={true}
-        onClick={onOpen}
-      />
+      <Tooltip label="Contrast">
+        <IconButton
+          aria-label="Pick a color"
+          size="md"
+          fontSize="2xl"
+          icon={<RiContrastFill />}
+          variant="ghost"
+          isRound={true}
+          onClick={onOpen}
+        />
+      </Tooltip>
       <Modal isOpen={isOpen} onClose={onClose} size="md">
         <ModalOverlay />
         <ModalContent>
