@@ -9,8 +9,8 @@ import {
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import { loginUser } from "../../services/authentication";
-import { useEffect } from "react";
 import { FormParams } from "../../models/FormParams";
+import { useMutation } from "react-query";
 
 export default function LoginForm({
   loggedIn,
@@ -23,21 +23,27 @@ export default function LoginForm({
     password: string;
   }>();
 
-  const [submitting, setSubmitting] = React.useState<boolean>(false);
-  const [error, setError] = React.useState<boolean>(false);
-
   const toast = useToast();
 
-  useEffect(() => {
-    if (error === true) {
-      toast({
-        status: "error",
-        title: "Wrong e-mail address or password!",
-        isClosable: true,
+  const loginUserMutation = useMutation(
+    (values: any) => {
+      return loginUser(values.email, values.password, {
+        loggedIn: loggedIn,
+        setLoggedIn: setLoggedIn,
+        setUser: setUser,
+        setToken: setToken,
       });
-      setError(false);
+    },
+    {
+      onError: () => {
+        toast({
+          status: "error",
+          title: "Wrong e-mail address or password!",
+          isClosable: true,
+        });
+      },
     }
-  }, [error, toast]);
+  );
 
   function onSubmit(values: any) {
     return new Promise((resolve) => {
@@ -48,19 +54,7 @@ export default function LoginForm({
           isClosable: true,
         });
       } else {
-        setSubmitting(true);
-        loginUser(
-          values.email,
-          values.password,
-          {
-            loggedIn: loggedIn,
-            setLoggedIn: setLoggedIn,
-            setUser: setUser,
-            setToken: setToken,
-          },
-          setSubmitting,
-          setError
-        );
+        loginUserMutation.mutateAsync(values);
       }
       resolve(null);
     });
@@ -89,7 +83,7 @@ export default function LoginForm({
           mt={4}
           colorScheme="purple"
           type="submit"
-          isLoading={submitting}
+          isLoading={loginUserMutation.isLoading}
         >
           Log in
         </Button>

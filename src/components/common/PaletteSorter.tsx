@@ -10,7 +10,7 @@ import {
 import { ColorPalette } from "../../models/ColorPalette";
 import { Option } from "../../models/Option";
 import { getPalettes } from "../../network/Requests";
-import { useEffect } from "react";
+import { useQuery } from "react-query";
 
 export interface PaletteSorterParams {
   routeBase: string;
@@ -29,34 +29,37 @@ export default function PaletteSorter({
   const [sortBy, setSortBy] = React.useState<string>("");
   const [sortValue, setSortValue] = React.useState<string>("");
   const [inputType, setInputType] = React.useState<string>("text");
-  const [error, setError] = React.useState<boolean>(false);
 
   const toast = useToast();
+  let route = routeBase;
 
-  useEffect(() => {
-    if (error === true) {
-      toast({
-        status: "error",
-        title: "Cannot get palettes",
-        isClosable: true,
-      });
-      setError(false);
-    }
-  }, [error, toast]);
+  const { isLoading, isFetching, error, refetch } = useQuery(
+    "repoData",
+    () =>
+      getPalettes({
+        route: route,
+        setPalettes: setPalettes,
+      }),
+    { enabled: false }
+  );
+
+  if (error) {
+    toast({
+      status: "error",
+      title: "Cannot get palettes",
+      isClosable: true,
+    });
+  }
 
   async function updatePalettes() {
     if (orderBy === "" && sortBy === "") return;
-    var route = routeBase;
+    route = routeBase;
     if (orderBy !== "") route = route + "order=" + orderBy;
     if (sortBy !== "") {
       if (orderBy !== "") route = route + "&";
       route = route + "sortBy=" + sortBy + "&sortValue=" + sortValue;
     }
-    getPalettes({
-      route: route,
-      setPalettes: setPalettes,
-      setError: setError,
-    });
+    refetch();
   }
 
   return (
@@ -109,7 +112,11 @@ export default function PaletteSorter({
         onChange={(e) => setSortValue(e.target.value)}
         disabled={sortBy === ""}
       />
-      <Button colorScheme="purple" onClick={() => updatePalettes()}>
+      <Button
+        colorScheme="purple"
+        isLoading={isLoading || isFetching}
+        onClick={() => updatePalettes()}
+      >
         Apply
       </Button>
     </HStack>

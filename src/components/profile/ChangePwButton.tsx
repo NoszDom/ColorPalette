@@ -19,6 +19,7 @@ import {
 import axios from "axios";
 import { User } from "../../models/User";
 import { targetApiUrl } from "../../network/Config";
+import { useMutation } from "react-query";
 
 export interface PwButtonParams {
   user: User;
@@ -31,6 +32,36 @@ export default function ChangePwButton({ user }: PwButtonParams) {
   const [newPw, setNewPw] = React.useState<string>("");
   const [newPwAg, setNewPwAg] = React.useState<string>("");
   const toast = useToast();
+
+  const save = useMutation(
+    () => {
+      return axios.put(targetApiUrl + "/users/edit/password", {
+        id: user.id,
+        oldPassword: oldPw,
+        newPassword: newPw,
+      });
+    },
+    {
+      onSuccess: () => {
+        toast({
+          title: "Password changed successfully!",
+          status: "success",
+          isClosable: true,
+        });
+        onClose();
+        setOldPw("");
+        setNewPw("");
+        setNewPwAg("");
+      },
+      onError: () => {
+        toast({
+          title: "Current password does not match!",
+          status: "error",
+          isClosable: true,
+        });
+      },
+    }
+  );
 
   async function saveNewPw() {
     if (newPw === oldPw) {
@@ -46,30 +77,7 @@ export default function ChangePwButton({ user }: PwButtonParams) {
         isClosable: true,
       });
     } else {
-      axios
-        .put(targetApiUrl + "/users/edit/password", {
-          id: user.id,
-          oldPassword: oldPw,
-          newPassword: newPw,
-        })
-        .then(() => {
-          toast({
-            title: "Password changed successfully!",
-            status: "success",
-            isClosable: true,
-          });
-          onClose();
-          setOldPw("");
-          setNewPw("");
-          setNewPwAg("");
-        })
-        .catch((error) =>
-          toast({
-            title: "Current password does not match!",
-            status: "error",
-            isClosable: true,
-          })
-        );
+      save.mutateAsync();
     }
   }
 

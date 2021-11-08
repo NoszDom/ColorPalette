@@ -5,6 +5,7 @@ import { ColorPalette } from "../../models/ColorPalette";
 import { Option } from "../../models/Option";
 import PaletteSorter from "./PaletteSorter";
 import { useEffect, useState } from "react";
+import { useQuery } from "react-query";
 import { getPalettes } from "../../network/Requests";
 
 export interface PaletteCollectionParams {
@@ -26,15 +27,19 @@ export default function PaletteCollection({
 }: PaletteCollectionParams) {
   const [refreshPalettes, setRefreshPalettes] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (refreshPalettes === true) {
+  const { isLoading, error, refetch } = useQuery(
+    "repoData",
+    () =>
       getPalettes({
         route: routeBase,
         setPalettes: setPaletteArray,
-      });
-      setRefreshPalettes(false);
-    }
-  }, [refreshPalettes, routeBase, setPaletteArray]);
+      }),
+    { refetchOnWindowFocus: false, enabled: false }
+  );
+
+  useEffect(() => {
+    if (refreshPalettes) refetch();
+  }, [refreshPalettes, refetch]);
 
   return (
     <Box w="100%" h="100%">

@@ -23,6 +23,7 @@ import { MdBookmark, MdBookmarkBorder } from "react-icons/md";
 import { ColorPalette } from "../../models/ColorPalette";
 import axios from "axios";
 import { targetApiUrl } from "../../network/Config";
+import { useMutation } from "react-query";
 
 export interface FooterParams {
   height: string;
@@ -40,6 +41,70 @@ export default function PaletteFooter({
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
   const [saved, setSaved] = React.useState<boolean>(palette.savedByCurrentUser);
+
+  const deletePalette = useMutation(
+    () => {
+      return axios.delete(targetApiUrl + "/colorpalettes/" + palette.id);
+    },
+    {
+      onSuccess: () => {
+        toast({
+          status: "success",
+          title: palette.name + " deleted!",
+          isClosable: true,
+        });
+        setRefreshPalettes(true);
+        onClose();
+      },
+      onError: () => {
+        toast({
+          status: "error",
+          title: "Couldn't delete " + palette.name + ".",
+          isClosable: true,
+        });
+        onClose();
+      },
+    }
+  );
+
+  const savePalette = useMutation(
+    () => {
+      return axios.post(targetApiUrl + "/saves/", {
+        userId: userId,
+        colorPaletteId: palette.id,
+      });
+    },
+    {
+      onSuccess: () => {
+        setSaved(true);
+      },
+      onError: () => {
+        toast({
+          status: "error",
+          title: "Couldn't save " + palette.name + ".",
+          isClosable: true,
+        });
+      },
+    }
+  );
+
+  const unsavePalette = useMutation(
+    () => {
+      return axios.delete(targetApiUrl + "/saves/" + palette.id + "/" + userId);
+    },
+    {
+      onSuccess: () => {
+        setSaved(false);
+      },
+      onError: () => {
+        toast({
+          status: "error",
+          title: "Couldn't unsave " + palette.name + ".",
+          isClosable: true,
+        });
+      },
+    }
+  );
 
   const button =
     palette.creatorId === userId ? (
@@ -73,7 +138,7 @@ export default function PaletteFooter({
               >
                 Cancel
               </Button>
-              <Button colorScheme="red" onClick={deletePalette}>
+              <Button colorScheme="red" onClick={() => deletePalette.mutate()}>
                 Delete
               </Button>
             </ModalFooter>
@@ -86,40 +151,11 @@ export default function PaletteFooter({
         aria-label="Save item"
         icon={saved ? <MdBookmark /> : <MdBookmarkBorder />}
         fontSize="md"
-        onClick={() => (saved ? unSavePalette() : savePalette())}
+        onClick={() =>
+          saved ? unsavePalette.mutateAsync() : savePalette.mutateAsync()
+        }
       />
     );
-
-  async function deletePalette() {
-    axios.delete(targetApiUrl + "/colorpalettes/" + palette.id).then(() => {
-      setRefreshPalettes(true);
-      onClose();
-      toast({
-        status: "success",
-        title: palette.name + " deleted!",
-        isClosable: true,
-      });
-    });
-  }
-
-  async function savePalette() {
-    axios
-      .post(targetApiUrl + "/saves/", {
-        userId: userId,
-        colorPaletteId: palette.id,
-      })
-      .then(() => {
-        setSaved(true);
-      });
-  }
-
-  async function unSavePalette() {
-    axios
-      .delete(targetApiUrl + "/saves/" + palette.id + "/" + userId)
-      .then(() => {
-        setSaved(false);
-      });
-  }
 
   return (
     <Tooltip

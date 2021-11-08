@@ -16,7 +16,7 @@ export default function PaletteCard({
   setRefreshPalettes,
 }: PaletteCardParams) {
   return (
-    <Box w="300px" h="200px" borderRadius="xl" border="1px" overflow="hidden">
+    <Box w="320px" h="200px" borderRadius="xl" border="1px" overflow="hidden">
       <ColorPalette
         colors={palette.colors}
         height="calc(100% - 36px)"

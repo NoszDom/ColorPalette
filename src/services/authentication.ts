@@ -8,9 +8,7 @@ import { FormParams } from "../models/FormParams";
 export async function loginUser(
   email: string,
   password: string,
-  { loggedIn, setLoggedIn, setUser, setToken }: FormParams,
-  setSubmitting: React.Dispatch<React.SetStateAction<boolean>>,
-  setError: React.Dispatch<React.SetStateAction<boolean>>
+  { loggedIn, setLoggedIn, setUser, setToken }: FormParams
 ) {
   if (!loggedIn) {
     axios
@@ -26,12 +24,6 @@ export async function loginUser(
 
         configAxios({ setLoggedIn: setLoggedIn });
         setLoggedIn(true);
-
-        setSubmitting(false);
-      })
-      .catch(() => {
-        setError(true);
-        setSubmitting(false);
       });
   }
 }
@@ -40,9 +32,7 @@ export async function createUser(
   name: string,
   email: string,
   password: string,
-  { loggedIn, setLoggedIn, setUser, setToken }: FormParams,
-  setSubmitting: React.Dispatch<React.SetStateAction<boolean>>,
-  setError: React.Dispatch<React.SetStateAction<boolean>>
+  { loggedIn, setLoggedIn, setUser, setToken }: FormParams
 ) {
   axios
     .post(targetApiUrl + "/users/", {
@@ -51,16 +41,7 @@ export async function createUser(
       password: password,
     })
     .then(() => {
-      loginUser(
-        email,
-        password,
-        { loggedIn, setLoggedIn, setUser, setToken },
-        setSubmitting,
-        setError
-      );
-    })
-    .catch(() => {
-      setError(true);
+      loginUser(email, password, { loggedIn, setLoggedIn, setUser, setToken });
     });
   return false;
 }

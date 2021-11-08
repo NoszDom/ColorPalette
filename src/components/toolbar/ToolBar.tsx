@@ -28,6 +28,7 @@ import Contrast from "./Contrast";
 import Saturation from "./Saturation";
 import Hue from "./Hue";
 import ImgPaletteGenerator from "./ImgPaletteGenerator";
+import { useMutation } from "react-query";
 
 export interface ToolBarParams {
   userId?: number;
@@ -38,12 +39,38 @@ export interface ToolBarParams {
 export default function ToolBar({ userId, colors, setColors }: ToolBarParams) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [paletteName, setPaletteName] = React.useState<string>("");
-  const [submitting, setSubmitting] = React.useState<boolean>(false);
   const toast = useToast();
   const ref = React.useRef(null);
 
+  const save = useMutation(
+    () => {
+      return axios.post(targetApiUrl + "/colorpalettes/", {
+        name: paletteName,
+        colors: JSON.stringify(colors),
+        creatorId: userId,
+      });
+    },
+    {
+      onSuccess: () => {
+        onClose();
+        setPaletteName("");
+        toast({
+          status: "success",
+          title: paletteName + " saved!",
+          isClosable: true,
+        });
+      },
+      onError: () => {
+        toast({
+          title: "Couldn't save " + paletteName,
+          status: "error",
+          isClosable: true,
+        });
+      },
+    }
+  );
+
   async function savePalette() {
-    setSubmitting(true);
     if (paletteName === "") {
       toast({
         status: "error",
@@ -51,22 +78,7 @@ export default function ToolBar({ userId, colors, setColors }: ToolBarParams) {
         isClosable: true,
       });
     } else {
-      axios
-        .post(targetApiUrl + "/colorpalettes/", {
-          name: paletteName,
-          colors: JSON.stringify(colors),
-          creatorId: userId,
-        })
-        .then(() => {
-          onClose();
-          setPaletteName("");
-          setSubmitting(false);
-          toast({
-            status: "success",
-            title: paletteName + " saved!",
-            isClosable: true,
-          });
-        });
+      save.mutateAsync();
     }
   }
 
@@ -117,7 +129,7 @@ export default function ToolBar({ userId, colors, setColors }: ToolBarParams) {
               </ModalBody>
 
               <ModalFooter>
-                {submitting ? (
+                {save.isLoading ? (
                   <Center width="100%" height="30px">
                     <Spinner size="md"></Spinner>
                   </Center>

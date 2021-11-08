@@ -4,17 +4,17 @@ import PaletteCollection from "../components/common/PaletteCollection";
 import { ColorPalette } from "../models/ColorPalette";
 import { Option } from "../models/Option";
 import { getPalettes } from "../network/Requests";
-import { useEffect } from "react";
+import { useQuery } from "react-query";
 
 export interface BrowseParams {
   userId?: number;
 }
 
 export default function BrowsePage({ userId }: BrowseParams) {
-  const [loaded, setLoaded] = React.useState<boolean>(false);
   const [palettes, setPalettes] = React.useState<Array<ColorPalette>>(
     Array<ColorPalette>()
   );
+  const route = "/colorpalettes/" + userId + "/saved?";
 
   const orderOptions: Array<Option> = [
     { text: "Palette name A -> Z", value: "name" },
@@ -30,36 +30,28 @@ export default function BrowsePage({ userId }: BrowseParams) {
     { text: "Creator name", value: "creator" },
   ];
 
-  const [error, setError] = React.useState<boolean>(false);
-
   const toast = useToast();
 
-  useEffect(() => {
-    if (error === true) {
-      toast({
-        status: "error",
-        title: "Cannot get palettes",
-        isClosable: true,
-      });
-      setError(false);
-    }
-  }, [error, toast]);
-
-  React.useEffect(() => {
+  const { isLoading, error, data, isFetching } = useQuery("repoData", () =>
     getPalettes({
-      route: "/colorpalettes/" + userId + "/saved",
-      loaded: loaded,
-      setLoaded: setLoaded,
+      route: route,
       setPalettes: setPalettes,
-      setError: setError,
-    });
-  }, [loaded, userId]);
+    })
+  );
 
-  if (loaded) {
+  if (error) {
+    toast({
+      status: "error",
+      title: "Cannot get palettes",
+      isClosable: true,
+    });
+  }
+
+  if (!isLoading) {
     return (
       <Box w="100%" h="calc(100% - 56px)" overflowY="auto" overflowX="hidden">
         <PaletteCollection
-          routeBase={"/colorpalettes/" + userId + "/saved?"}
+          routeBase={route}
           paletteArray={palettes}
           setPaletteArray={setPalettes}
           userId={userId}

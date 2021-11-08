@@ -11,6 +11,7 @@ import { useForm } from "react-hook-form";
 import { createUser } from "../../services/authentication";
 import { useEffect, useState } from "react";
 import { FormParams } from "../../models/FormParams";
+import { useMutation } from "react-query";
 
 export default function RegisterForm({
   loggedIn,
@@ -26,21 +27,27 @@ export default function RegisterForm({
     passwordAgain: string;
   }>();
 
-  const [submitting, setSubmitting] = React.useState<boolean>(false);
-  const [error, setError] = useState<boolean>(false);
-
   const toast = useToast();
 
-  useEffect(() => {
-    if (error === true) {
-      toast({
-        status: "error",
-        title: "User already exists!",
-        isClosable: true,
-      });
-      setError(false);
+  const createUserMutation = useMutation(
+    (values: any) => {
+      return createUser(
+        values.firstName + " " + values.lastName,
+        values.email,
+        values.password,
+        { loggedIn, setLoggedIn, setUser, setToken }
+      );
+    },
+    {
+      onError: () => {
+        toast({
+          status: "error",
+          title: "User with this email address alredy exists!",
+          isClosable: true,
+        });
+      },
     }
-  }, [error, toast]);
+  );
 
   function onSubmit(values: any) {
     return new Promise((resolve) => {
@@ -63,15 +70,7 @@ export default function RegisterForm({
           isClosable: true,
         });
       } else {
-        setSubmitting(true);
-        createUser(
-          values.firstName + " " + values.lastName,
-          values.email,
-          values.password,
-          { loggedIn, setLoggedIn, setUser, setToken },
-          setSubmitting,
-          setError
-        );
+        createUserMutation.mutateAsync(values);
       }
       resolve(null);
     });
@@ -122,7 +121,7 @@ export default function RegisterForm({
           mt={4}
           colorScheme="purple"
           type="submit"
-          isLoading={submitting}
+          isLoading={createUserMutation.isLoading}
         >
           Register
         </Button>

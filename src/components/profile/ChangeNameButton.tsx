@@ -21,6 +21,7 @@ import { AiOutlineEdit } from "react-icons/ai";
 import { User } from "../../models/User";
 import axios from "axios";
 import { targetApiUrl } from "../../network/Config";
+import { useMutation } from "react-query";
 
 export interface ChangeNameButtonParams {
   user: User;
@@ -41,6 +42,33 @@ export default function ChangeNameButton({
 
   const toast = useToast();
 
+  const save = useMutation(
+    () => {
+      return axios.put(targetApiUrl + "/users/edit/name", {
+        id: user.id,
+        name: firstName + " " + lastName,
+      });
+    },
+    {
+      onSuccess: () => {
+        setUser((prev) => ({ ...prev, name: firstName + " " + lastName }));
+
+        toast({
+          title: "Name changed successfully!",
+          status: "success",
+          isClosable: true,
+        });
+      },
+      onError: () => {
+        toast({
+          title: "Couldn't change name address.",
+          status: "error",
+          isClosable: true,
+        });
+      },
+    }
+  );
+
   function clickSave() {
     if (firstName === "" || lastName === "") {
       toast({
@@ -55,20 +83,7 @@ export default function ChangeNameButton({
         isClosable: true,
       });
     } else {
-      axios
-        .put(targetApiUrl + "/users/edit/name", {
-          id: user.id,
-          name: firstName + " " + lastName,
-        })
-        .then(() => {
-          setUser((prev) => ({ ...prev, name: firstName + " " + lastName }));
-
-          toast({
-            title: "Name changed successfully!",
-            status: "success",
-            isClosable: true,
-          });
-        });
+      save.mutateAsync();
     }
   }
 

@@ -4,14 +4,13 @@ import PaletteCollection from "../components/common/PaletteCollection";
 import { ColorPalette } from "../models/ColorPalette";
 import { Option } from "../models/Option";
 import { getPalettes } from "../network/Requests";
-import { useEffect } from "react";
+import { useQuery } from "react-query";
 
 export interface BrowseParams {
   userId?: number;
 }
 
 export default function BrowsePage({ userId }: BrowseParams) {
-  const [loaded, setLoaded] = React.useState<boolean>(false);
   const [palettes, setPalettes] = React.useState<Array<ColorPalette>>(
     Array<ColorPalette>()
   );
@@ -32,37 +31,30 @@ export default function BrowsePage({ userId }: BrowseParams) {
     { text: "Minimum saves", value: "min-saves" },
     { text: "Maximum saves", value: "max-saves" },
   ];
-  const url =
+  const route =
     userId === undefined ? "/colorpalettes?" : "/colorpalettes/" + userId + "?";
-  const [error, setError] = React.useState<boolean>(false);
   const toast = useToast();
 
-  useEffect(() => {
-    if (error === true) {
-      toast({
-        status: "error",
-        title: "Cannot get palettes",
-        isClosable: true,
-      });
-      setError(false);
-    }
-  }, [error, toast]);
-
-  React.useEffect(() => {
+  const { isLoading, error, data, isFetching } = useQuery("repoData", () =>
     getPalettes({
-      route: url,
-      loaded: loaded,
-      setLoaded: setLoaded,
+      route: route,
       setPalettes: setPalettes,
-      setError,
-    });
-  }, [loaded, url]);
+    })
+  );
 
-  if (loaded) {
+  if (error) {
+    toast({
+      status: "error",
+      title: "Cannot get palettes",
+      isClosable: true,
+    });
+  }
+
+  if (!isLoading) {
     return (
       <Box w="100%" h="calc(100% - 56px)" overflowY="auto" overflowX="hidden">
         <PaletteCollection
-          routeBase={url}
+          routeBase={route}
           paletteArray={palettes}
           setPaletteArray={setPalettes}
           userId={userId}

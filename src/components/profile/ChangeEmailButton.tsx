@@ -21,6 +21,7 @@ import { AiOutlineEdit } from "react-icons/ai";
 import { User } from "../../models/User";
 import axios from "axios";
 import { targetApiUrl } from "../../network/Config";
+import { useMutation } from "react-query";
 
 export interface ChangeEmailButtonParams {
   user: User;
@@ -37,6 +38,33 @@ export default function ChangeEmailButton({
   );
   const toast = useToast();
 
+  const save = useMutation(
+    () => {
+      return axios.put(targetApiUrl + "/users/edit/email", {
+        id: user.id,
+        email: email,
+      });
+    },
+    {
+      onSuccess: () => {
+        setUser((prev) => ({ ...prev, email: email }));
+
+        toast({
+          title: "Email address changed successfully!",
+          status: "success",
+          isClosable: true,
+        });
+      },
+      onError: () => {
+        toast({
+          title: "Couldn't change email address.",
+          status: "error",
+          isClosable: true,
+        });
+      },
+    }
+  );
+
   function clickSave() {
     if (!email.includes("@")) {
       toast({
@@ -51,20 +79,7 @@ export default function ChangeEmailButton({
         isClosable: true,
       });
     } else {
-      axios
-        .put(targetApiUrl + "/users/edit/email", {
-          id: user.id,
-          email: email,
-        })
-        .then(() => {
-          setUser((prev) => ({ ...prev, email: email }));
-
-          toast({
-            title: "Email address changed successfully!",
-            status: "success",
-            isClosable: true,
-          });
-        });
+      save.mutateAsync();
     }
   }
 
