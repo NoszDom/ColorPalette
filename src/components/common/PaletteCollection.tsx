@@ -6,7 +6,7 @@ import { Option } from "../../models/Option";
 import PaletteSorter from "./PaletteSorter";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
-import { getPalettes } from "../../network/Requests";
+import { getPalettes } from "../../network/common-requests";
 
 export interface PaletteCollectionParams {
   userId?: number;

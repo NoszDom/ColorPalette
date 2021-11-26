@@ -3,7 +3,7 @@ import { Box, Center, Spinner, useToast } from "@chakra-ui/react";
 import PaletteCollection from "../components/common/PaletteCollection";
 import { ColorPalette } from "../models/ColorPalette";
 import { Option } from "../models/Option";
-import { getPalettes } from "../network/Requests";
+import { getPalettes } from "../network/common-requests";
 import { useQuery } from "react-query";
 
 export interface BrowseParams {
