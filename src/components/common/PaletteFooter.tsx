@@ -22,7 +22,7 @@ import { FiTrash2 } from "react-icons/fi";
 import { MdBookmark, MdBookmarkBorder } from "react-icons/md";
 import { ColorPalette } from "../../models/ColorPalette";
 import axios from "axios";
-import { targetApiUrl } from "../../network/Config";
+import { targetApiUrl } from "../../network/config";
 import { useMutation } from "react-query";
 
 export interface FooterParams {

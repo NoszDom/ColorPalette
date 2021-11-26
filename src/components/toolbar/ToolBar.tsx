@@ -22,7 +22,7 @@ import {
 } from "@chakra-ui/react";
 import Generator from "./Generator";
 import axios from "axios";
-import { targetApiUrl } from "../../network/Config";
+import { targetApiUrl } from "../../network/config";
 import Brightness from "./Brightness";
 import Contrast from "./Contrast";
 import Saturation from "./Saturation";

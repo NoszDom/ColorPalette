@@ -9,7 +9,6 @@ import {
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import { createUser } from "../../services/authentication";
-import { useEffect, useState } from "react";
 import { FormParams } from "../../models/FormParams";
 import { useMutation } from "react-query";
 
@@ -39,7 +38,7 @@ export default function RegisterForm({
       );
     },
     {
-      onError: () => {
+      onError: (error, variables, context) => {
         toast({
           status: "error",
           title: "User with this email address alredy exists!",

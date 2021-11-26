@@ -1,6 +1,6 @@
 import { User } from "../models/User";
 import jwt_decode from "jwt-decode";
-import { configAxios } from "../network/Config";
+import { configAxios } from "../network/config";
 
 export function save(user: User, token: string) {
   localStorage.setItem("user", JSON.stringify(user));

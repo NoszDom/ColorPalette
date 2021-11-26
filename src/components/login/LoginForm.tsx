@@ -35,7 +35,8 @@ export default function LoginForm({
       });
     },
     {
-      onError: () => {
+      onSuccess: () => {},
+      onError: (error, variables, context) => {
         toast({
           status: "error",
           title: "Wrong e-mail address or password!",
@@ -46,18 +47,21 @@ export default function LoginForm({
   );
 
   function onSubmit(values: any) {
-    return new Promise((resolve) => {
-      if (values.email.length === 0 || values.password.length === 0) {
-        toast({
-          status: "error",
-          title: "You must fill in all of the boxes!",
-          isClosable: true,
-        });
-      } else {
-        loginUserMutation.mutateAsync(values);
-      }
-      resolve(null);
-    });
+    if (
+      !values ||
+      !values.email ||
+      !values.password ||
+      !values.email.length ||
+      !values.password.length
+    ) {
+      toast({
+        status: "error",
+        title: "You must fill in all of the boxes!",
+        isClosable: true,
+      });
+    } else {
+      loginUserMutation.mutateAsync(values);
+    }
   }
 
   return (

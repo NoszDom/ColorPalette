@@ -1,7 +1,7 @@
-import { targetApiUrl } from "../network/Config";
+import { targetApiUrl } from "../network/config";
 import axios from "axios";
 import { save } from "./storage";
-import { configAxios } from "../network/Config";
+import { configAxios } from "../network/config";
 import { LoggedInUser } from "../models/User";
 import { FormParams } from "../models/FormParams";
 

@@ -13,7 +13,7 @@ export function configAxios({ setLoggedIn }: configAxiosParams) {
     (req) => {
       const token = localStorage.getItem("token");
       if (token !== null && isValidToken(token)) {
-        req.headers["Authorization"] = token;
+        req.headers["Authorization"] = `Bearer ${token}`;
         return req;
       } else if (req.url?.includes("login")) {
         return req;

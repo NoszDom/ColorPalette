@@ -18,7 +18,7 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import { User } from "../../models/User";
-import { targetApiUrl } from "../../network/Config";
+import { targetApiUrl } from "../../network/config";
 import { useMutation } from "react-query";
 
 export interface PwButtonParams {

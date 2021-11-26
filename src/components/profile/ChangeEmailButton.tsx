@@ -20,7 +20,7 @@ import {
 import { AiOutlineEdit } from "react-icons/ai";
 import { User } from "../../models/User";
 import axios from "axios";
-import { targetApiUrl } from "../../network/Config";
+import { targetApiUrl } from "../../network/config";
 import { useMutation } from "react-query";
 
 export interface ChangeEmailButtonParams {
