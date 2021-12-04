@@ -31,5 +31,5 @@ export function load(
 function isValidToken(token: string): boolean {
   const decoded = jwt_decode(token);
   //@ts-ignore
-  return new Date(decoded.exp * 1000) > new Date() ? decoded : null;
+  return new Date(decoded.exp * 1000) > new Date();
 }

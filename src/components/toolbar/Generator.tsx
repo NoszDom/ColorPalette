@@ -39,7 +39,8 @@ export default function ToolBar({ colors, setColors }: GeneratorParams) {
 }
 
 export function generateRandom() {
-  return randomColor({ hue: "random", luminosity: "random", count: 5 });
+  const colors = randomColor({ hue: "random", luminosity: "random", count: 5 });
+  return colors.map((c) => c.toUpperCase());
 }
 
 const hueOption = [
@@ -55,7 +56,8 @@ const hueOption = [
 // jelenleg a randomcolor által generált színnel crashel, ezért a konstans hue-k közül választok egyet
 function generateMonochrome() {
   const randomHue = hueOption[Math.floor(Math.random() * hueOption.length)];
-  return randomColor({ hue: randomHue, count: 5 });
+  const colors = randomColor({ hue: randomHue, count: 5 });
+  return colors.map((c) => c.toUpperCase());
 }
 
 function generateComplementary() {
@@ -63,7 +65,7 @@ function generateComplementary() {
   const colors = randomColor({ hue: randomHue, count: 3 });
   colors.push(getComplementaryColor(colors[0]));
   colors.push(getComplementaryColor(colors[1]));
-  return colors;
+  return colors.map((c) => c.toUpperCase());
 }
 
 function getComplementaryColor(hex: string): string {

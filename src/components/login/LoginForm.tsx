@@ -1,4 +1,5 @@
 import * as React from "react";
+
 import {
   Center,
   FormControl,
@@ -7,10 +8,12 @@ import {
   Button,
   useToast,
 } from "@chakra-ui/react";
+
 import { useForm } from "react-hook-form";
+import { useMutation } from "react-query";
+
 import { loginUser } from "../../services/authentication";
 import { FormParams } from "../../models/FormParams";
-import { useMutation } from "react-query";
 
 export default function LoginForm({
   loggedIn,
@@ -26,17 +29,15 @@ export default function LoginForm({
   const toast = useToast();
 
   const loginUserMutation = useMutation(
-    (values: any) => {
-      return loginUser(values.email, values.password, {
+    (values: any) =>
+      loginUser(values.email, values.password, {
         loggedIn: loggedIn,
         setLoggedIn: setLoggedIn,
         setUser: setUser,
         setToken: setToken,
-      });
-    },
+      }),
     {
-      onSuccess: () => {},
-      onError: (error, variables, context) => {
+      onError: () => {
         toast({
           status: "error",
           title: "Wrong e-mail address or password!",
@@ -47,13 +48,7 @@ export default function LoginForm({
   );
 
   function onSubmit(values: any) {
-    if (
-      !values ||
-      !values.email ||
-      !values.password ||
-      !values.email.length ||
-      !values.password.length
-    ) {
+    if (!values.email || !values.password) {
       toast({
         status: "error",
         title: "You must fill in all of the boxes!",

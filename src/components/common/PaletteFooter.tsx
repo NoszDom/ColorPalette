@@ -40,7 +40,6 @@ export default function PaletteFooter({
 }: FooterParams) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
-  const [saved, setSaved] = React.useState<boolean>(palette.savedByCurrentUser);
 
   const deletePalette = useMutation(
     () => {
@@ -68,15 +67,14 @@ export default function PaletteFooter({
   );
 
   const savePalette = useMutation(
-    () => {
-      return axios.post(targetApiUrl + "/saves/", {
+    () =>
+      axios.post(targetApiUrl + "/saves/", {
         userId: userId,
         colorPaletteId: palette.id,
-      });
-    },
+      }),
     {
       onSuccess: () => {
-        setSaved(true);
+        setRefreshPalettes(true);
       },
       onError: () => {
         toast({
@@ -89,12 +87,10 @@ export default function PaletteFooter({
   );
 
   const unsavePalette = useMutation(
-    () => {
-      return axios.delete(targetApiUrl + "/saves/" + palette.id + "/" + userId);
-    },
+    () => axios.delete(targetApiUrl + "/saves/" + palette.id + "/" + userId),
     {
       onSuccess: () => {
-        setSaved(false);
+        setRefreshPalettes(true);
       },
       onError: () => {
         toast({
@@ -138,7 +134,10 @@ export default function PaletteFooter({
               >
                 Cancel
               </Button>
-              <Button colorScheme="red" onClick={() => deletePalette.mutate()}>
+              <Button
+                colorScheme="red"
+                onClick={() => deletePalette.mutateAsync()}
+              >
                 Delete
               </Button>
             </ModalFooter>
@@ -149,10 +148,14 @@ export default function PaletteFooter({
       <IconButton
         variant="ghost"
         aria-label="Save item"
-        icon={saved ? <MdBookmark /> : <MdBookmarkBorder />}
+        icon={
+          palette.savedByCurrentUser ? <MdBookmark /> : <MdBookmarkBorder />
+        }
         fontSize="md"
         onClick={() =>
-          saved ? unsavePalette.mutateAsync() : savePalette.mutateAsync()
+          palette.savedByCurrentUser
+            ? unsavePalette.mutateAsync()
+            : savePalette.mutateAsync()
         }
       />
     );
@@ -160,7 +163,7 @@ export default function PaletteFooter({
   return (
     <Tooltip
       label={[
-        palette.saves + " saves",
+        palette.saves + (palette.saves === 1 ? " save" : " saves"),
         <br key="enter" />,
         "Made by " + palette.creatorName,
       ]}

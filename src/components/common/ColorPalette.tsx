@@ -5,7 +5,7 @@ import ColorPanel from "./ColorPanel";
 export interface ColorPaletteParams {
   colors: string[];
   height: string;
-  fontSize: string;
+  fontSize?: string;
   editable?: boolean;
   setColors?: React.Dispatch<React.SetStateAction<string[]>>;
   noText?: boolean;
@@ -24,7 +24,7 @@ export default function ColorPalette({
 
   return (
     <Flex w="100%" h={height}>
-      {colors.map((value: string, index: number) => {
+      {colors.map((_, index) => {
         return (
           <ColorPanel
             colors={colors}

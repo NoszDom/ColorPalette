@@ -38,10 +38,10 @@ export default function RegisterForm({
       );
     },
     {
-      onError: (error, variables, context) => {
+      onError: () => {
         toast({
           status: "error",
-          title: "User with this email address alredy exists!",
+          title: "User with this email address already exists!",
           isClosable: true,
         });
       },
@@ -49,30 +49,27 @@ export default function RegisterForm({
   );
 
   function onSubmit(values: any) {
-    return new Promise((resolve) => {
-      if (values.password !== values.passwordAgain) {
-        toast({
-          status: "error",
-          title: "The two passwords are not the same!",
-          isClosable: true,
-        });
-      } else if (
-        values.firstName.length === 0 ||
-        values.lastName.length === 0 ||
-        values.email.length === 0 ||
-        values.password.length === 0 ||
-        values.passwordAgain.length === 0
-      ) {
-        toast({
-          status: "error",
-          title: "You must fill in all of the boxes!",
-          isClosable: true,
-        });
-      } else {
-        createUserMutation.mutateAsync(values);
-      }
-      resolve(null);
-    });
+    if (values.password !== values.passwordAgain) {
+      toast({
+        status: "error",
+        title: "The two passwords are not the same!",
+        isClosable: true,
+      });
+    } else if (
+      !values.firstName ||
+      !values.lastName ||
+      !values.email ||
+      !values.password ||
+      !values.passwordAgain
+    ) {
+      toast({
+        status: "error",
+        title: "You must fill in all of the boxes!",
+        isClosable: true,
+      });
+    } else {
+      createUserMutation.mutateAsync(values);
+    }
   }
 
   return (

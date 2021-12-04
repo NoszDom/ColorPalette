@@ -49,7 +49,7 @@ export default function Hue({ colors, setColors }: HueParams) {
     let hsvColors: Array<Array<number>> = colors.map((c) => convert.hex.hsv(c));
 
     hsvColors = hsvColors.map((c) => {
-      c[2] = Math.max(0, Math.min(100, Math.trunc(c[2] * multiplier)));
+      c[0] = Math.max(0, Math.min(360, Math.trunc(c[0] * multiplier)));
       return c;
     });
 

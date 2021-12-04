@@ -5,21 +5,20 @@ import { targetApiUrl } from "./config";
 export interface getPalettesParams {
   route: string;
   setPalettes: React.Dispatch<React.SetStateAction<Array<ColorPalette>>>;
+  params: Object;
 }
 
-export async function getPalettes({ route, setPalettes }: getPalettesParams) {
-  axios.get(targetApiUrl + route).then((response) => {
-    let palettes = response.data.map((value: JsonPalette) => {
-      return {
-        id: value.id,
-        name: value.name,
-        creatorId: value.creatorId,
-        creatorName: value.creatorName,
-        saves: value.saves,
-        savedByCurrentUser: value.savedByCurrentUser,
-        colors: JSON.parse(value.colors),
-      };
+export async function getPalettes({
+  route,
+  setPalettes,
+  params,
+}: getPalettesParams) {
+  return axios
+    .get(targetApiUrl + route, { params: params })
+    .then((response) => {
+      let palettes = response.data.map((value: JsonPalette) => {
+        return { ...value, colors: JSON.parse(value.colors) };
+      });
+      setPalettes(palettes);
     });
-    setPalettes(palettes);
-  });
 }

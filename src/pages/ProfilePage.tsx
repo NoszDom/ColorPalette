@@ -12,7 +12,6 @@ import {
   Button,
 } from "@chakra-ui/react";
 import { User } from "../models/User";
-import ChangePicButton from "../components/profile/ChangePicButton";
 import ChangeNameButton from "../components/profile/ChangeNameButton";
 import ChangeEmailButton from "../components/profile/ChangeEmailButton";
 import ChangePwButton from "../components/profile/ChangePwButton";
@@ -31,11 +30,7 @@ export default function ProfilePage({
 }: ProfileParams) {
   return (
     <VStack w="100%" h="calc(100% - 56px)" overflowY="auto" padding="20px">
-      <Avatar name={user.name} size="2xl" mb="30px">
-        <AvatarBadge bg="transparent" boxSize="1em">
-          <ChangePicButton />
-        </AvatarBadge>
-      </Avatar>
+      <Avatar name={user.name} size="2xl" mb="30px"></Avatar>
       <Stack
         padding="15px"
         borderRadius="xl"

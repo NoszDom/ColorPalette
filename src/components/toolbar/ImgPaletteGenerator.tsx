@@ -19,57 +19,7 @@ import {
   Center,
 } from "@chakra-ui/react";
 import { AiFillPicture } from "react-icons/ai";
-import ColorPalette from "../common/ColorPalette";
-import { usePalette } from "react-palette";
-
-interface PalettePreviewParams {
-  colors: Array<string>;
-  imgSrc: string;
-  preview: Array<string>;
-  setPreview: React.Dispatch<React.SetStateAction<Array<string>>>;
-}
-
-function PalettePreview({
-  colors,
-  imgSrc,
-  preview,
-  setPreview,
-}: PalettePreviewParams) {
-  const { data, loading } = usePalette(imgSrc);
-
-  const imgColors = [
-    data.darkMuted?.toUpperCase(),
-    data.muted?.toUpperCase(),
-    data.vibrant?.toUpperCase(),
-    data.lightVibrant?.toUpperCase(),
-    data.lightMuted?.toUpperCase(),
-  ];
-
-  if (imgSrc && !loading) {
-    if (JSON.stringify(preview) !== JSON.stringify(imgColors)) {
-      //@ts-ignore
-      setPreview(imgColors);
-    }
-    return (
-      <ColorPalette
-        height="100%"
-        fontSize="md"
-        //@ts-ignore
-        colors={imgColors}
-        noText={true}
-      ></ColorPalette>
-    );
-  } else {
-    return (
-      <ColorPalette
-        height="100%"
-        fontSize="md"
-        colors={colors}
-        noText={true}
-      ></ColorPalette>
-    );
-  }
-}
+import ImgPalettePreview from "./ImgPalettePreview";
 
 export interface ImgPaletteGeneratorParams {
   colors: Array<string>;
@@ -94,6 +44,7 @@ export default function ImgPaletteGenerator({
   function onFileUpload() {
     //@ts-ignore
     var file = inputRef.current.files[0];
+    if (file === null) return;
     var reader = new FileReader();
     reader.readAsDataURL(file);
 
@@ -119,7 +70,7 @@ export default function ImgPaletteGenerator({
       <Modal isOpen={isOpen} onClose={onClose} size="md">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Genetate palette form image:</ModalHeader>
+          <ModalHeader>Generate palette from image:</ModalHeader>
           <ModalCloseButton />
           <Divider />
           <ModalBody>
@@ -157,12 +108,12 @@ export default function ImgPaletteGenerator({
             </VStack>
             <Text>Preview:</Text>
             <Box width="100%" height="100px" rounded="xl" overflow="hidden">
-              <PalettePreview
+              <ImgPalettePreview
                 colors={colors}
                 imgSrc={imgSrc}
                 preview={preview}
                 setPreview={setPreview}
-              ></PalettePreview>
+              ></ImgPalettePreview>
             </Box>
           </ModalBody>
           <ModalFooter>

@@ -1,5 +1,6 @@
 import jwt_decode from "jwt-decode";
 import axios from "axios";
+import { logoutUser } from "../services/authentication";
 
 export const targetApiUrl = "https://localhost:5001/api";
 
@@ -9,18 +10,16 @@ export interface configAxiosParams {
 
 export function configAxios({ setLoggedIn }: configAxiosParams) {
   const authInterceptor = axios.interceptors.request.use(
-    //@ts-ignore
-    (req) => {
+    (req: any) => {
+      if (isWhiteList(req)) return req;
+
       const token = localStorage.getItem("token");
+
       if (token !== null && isValidToken(token)) {
         req.headers["Authorization"] = `Bearer ${token}`;
         return req;
-      } else if (req.url?.includes("login")) {
-        return req;
       } else {
-        localStorage.removeItem("user");
-        localStorage.removeItem("token");
-        setLoggedIn(false);
+        logoutUser(setLoggedIn);
         axios.interceptors.request.eject(authInterceptor);
         return Promise.reject();
       }
@@ -32,7 +31,17 @@ export function configAxios({ setLoggedIn }: configAxiosParams) {
 }
 
 function isValidToken(token: string) {
-  const decoded = jwt_decode(token);
-  //@ts-ignore
-  return new Date(decoded.exp * 1000) > new Date() ? decoded : null;
+  const decoded: any = jwt_decode(token);
+  return new Date(decoded.exp * 1000) > new Date();
 }
+
+function isWhiteList(req: any) {
+  return (
+    (req.method === "post" && postWhiteList.includes(req.url)) ||
+    (req.method === "get" && req.url.includes(getWhiteListExpression))
+  );
+}
+
+const postWhiteList = [targetApiUrl + "/login", targetApiUrl + "/users"];
+
+const getWhiteListExpression = targetApiUrl + "/colorpalettes?";

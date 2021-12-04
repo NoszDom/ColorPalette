@@ -11,15 +11,17 @@ export async function loginUser(
   { loggedIn, setLoggedIn, setUser, setToken }: FormParams
 ) {
   if (!loggedIn) {
-    axios
+    return axios
       .post(targetApiUrl + "/users/login", {
         email: email,
         password: password,
       })
       .then((response) => {
         const loggedInUser: LoggedInUser = response.data;
+
         setUser(loggedInUser.user);
         setToken(loggedInUser.token);
+
         save(loggedInUser.user, loggedInUser.token);
 
         configAxios({ setLoggedIn: setLoggedIn });
@@ -34,7 +36,7 @@ export async function createUser(
   password: string,
   { loggedIn, setLoggedIn, setUser, setToken }: FormParams
 ) {
-  axios
+  return axios
     .post(targetApiUrl + "/users/", {
       name: name,
       email: email,
@@ -43,7 +45,6 @@ export async function createUser(
     .then(() => {
       loginUser(email, password, { loggedIn, setLoggedIn, setUser, setToken });
     });
-  return false;
 }
 
 export function logoutUser(

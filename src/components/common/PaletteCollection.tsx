@@ -13,6 +13,8 @@ export interface PaletteCollectionParams {
   routeBase: string;
   paletteArray: Array<ColorPalette>;
   setPaletteArray: React.Dispatch<React.SetStateAction<Array<ColorPalette>>>;
+  setParams: React.Dispatch<React.SetStateAction<Object>>;
+  params: Object;
   orderOptions: Array<Option>;
   sortOptions: Array<Option>;
 }
@@ -22,23 +24,29 @@ export default function PaletteCollection({
   routeBase,
   paletteArray,
   setPaletteArray,
+  setParams,
+  params,
   orderOptions,
   sortOptions,
 }: PaletteCollectionParams) {
   const [refreshPalettes, setRefreshPalettes] = useState<boolean>(false);
 
-  const { isLoading, error, refetch } = useQuery(
-    "repoData",
+  const { refetch } = useQuery(
+    "refreshPalettes",
     () =>
       getPalettes({
         route: routeBase,
         setPalettes: setPaletteArray,
+        params: params,
       }),
     { refetchOnWindowFocus: false, enabled: false }
   );
 
   useEffect(() => {
-    if (refreshPalettes) refetch();
+    if (refreshPalettes) {
+      refetch();
+      setRefreshPalettes(false);
+    }
   }, [refreshPalettes, refetch]);
 
   return (
@@ -48,6 +56,7 @@ export default function PaletteCollection({
         setPalettes={setPaletteArray}
         orderOptions={orderOptions}
         sortOptions={sortOptions}
+        setParams={setParams}
       ></PaletteSorter>
       <Divider />
       <Wrap spacing="30px" justify="center" p={7}>

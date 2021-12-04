@@ -14,6 +14,7 @@ export default function BrowsePage({ userId }: BrowseParams) {
   const [palettes, setPalettes] = React.useState<Array<ColorPalette>>(
     Array<ColorPalette>()
   );
+  const [params, setParams] = React.useState<Object>({});
 
   const orderOptions: Array<Option> = [
     { text: "Palette name A -> Z", value: "name" },
@@ -26,10 +27,11 @@ export default function BrowsePage({ userId }: BrowseParams) {
 
   const toast = useToast();
 
-  const { isLoading, error, data, isFetching } = useQuery("repoData", () =>
+  const { isLoading, error } = useQuery("ownPalettes", () =>
     getPalettes({
       route: "/colorpalettes/" + userId + "?creator=" + userId,
       setPalettes: setPalettes,
+      params: params,
     })
   );
 
@@ -48,6 +50,8 @@ export default function BrowsePage({ userId }: BrowseParams) {
           routeBase={"/colorpalettes/" + userId + "?creator=" + userId + "&"}
           paletteArray={palettes}
           setPaletteArray={setPalettes}
+          setParams={setParams}
+          params={params}
           userId={userId}
           orderOptions={orderOptions}
           sortOptions={sortOptions}

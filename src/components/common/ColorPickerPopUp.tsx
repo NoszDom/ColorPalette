@@ -59,10 +59,7 @@ export default function ColorPickerPopUp({
 
   function inputHexChanged(input: string) {
     setInputHex(input);
-    if (
-      (input.length === 4 || input.length === 7) &&
-      hexColorRegex({ strict: true }).test(input)
-    )
+    if (input.length === 7 && hexColorRegex({ strict: true }).test(input))
       hexChanged(input);
   }
 
@@ -120,36 +117,20 @@ export default function ColorPickerPopUp({
             <HStack spacing={6}>
               <Text fontWeight="bold">RGB:</Text>
               <HStack spacing={3}>
-                <NumberInput
-                  size="sm"
-                  maxW={12}
-                  min={0}
-                  max={255}
-                  value={rgb[0]}
-                  onChange={(_, value) => rgbChanged(value, 0)}
-                >
-                  <NumberInputField />
-                </NumberInput>
-                <NumberInput
-                  size="sm"
-                  maxW={12}
-                  min={0}
-                  max={255}
-                  value={rgb[1]}
-                  onChange={(_, value) => rgbChanged(value, 1)}
-                >
-                  <NumberInputField />
-                </NumberInput>
-                <NumberInput
-                  size="sm"
-                  maxW={12}
-                  min={0}
-                  max={255}
-                  value={rgb[2]}
-                  onChange={(_, value) => rgbChanged(value, 2)}
-                >
-                  <NumberInputField />
-                </NumberInput>
+                {rgb.map((_, index) => {
+                  return (
+                    <NumberInput
+                      size="sm"
+                      maxW={12}
+                      min={0}
+                      max={255}
+                      value={rgb[index]}
+                      onChange={(_, value) => rgbChanged(value, index)}
+                    >
+                      <NumberInputField />
+                    </NumberInput>
+                  );
+                })}
               </HStack>
             </HStack>
           </Stack>

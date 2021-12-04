@@ -8,7 +8,7 @@ export interface ColorPanelParams {
   index: number;
   width: number;
   height: number;
-  fontSize: string;
+  fontSize?: string;
   editable?: boolean;
   setColors?: React.Dispatch<React.SetStateAction<string[]>>;
   noText?: boolean;
@@ -46,7 +46,7 @@ export default function ColorPanel({
             {colors[index]}
           </Heading>
         )}
-        s{colorPicker}
+        {colorPicker}
       </VStack>
     </Center>
   );

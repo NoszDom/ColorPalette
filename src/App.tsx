@@ -78,23 +78,25 @@ export default function App() {
         <Router>
           <NavBar isLoggedIn={false} />
           <Divider />
-          <Route exact path="/login">
-            <LoginPage
-              loggedIn={loggedIn}
-              setLoggedIn={setLoggedIn}
-              setUser={setCurrentUser}
-              setToken={setToken}
-            />
-          </Route>
-          <Route exact path="/generator">
-            <GeneratorPage />
-          </Route>
-          <Route exact path="/browse">
-            <BrowsePage />
-          </Route>
-          <Route path="/">
-            <Redirect to="/generator" />
-          </Route>
+          <Switch>
+            <Route exact path="/login">
+              <LoginPage
+                loggedIn={loggedIn}
+                setLoggedIn={setLoggedIn}
+                setUser={setCurrentUser}
+                setToken={setToken}
+              />
+            </Route>
+            <Route exact path="/generator">
+              <GeneratorPage />
+            </Route>
+            <Route exact path="/browse">
+              <BrowsePage />
+            </Route>
+            <Route path="/">
+              <Redirect to="/generator" />
+            </Route>
+          </Switch>
         </Router>
       </QueryClientProvider>
     );

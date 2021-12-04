@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import { ColorPalette } from "../../models/ColorPalette";
 import { Option } from "../../models/Option";
-import { getPalettes } from "../../network/Requests";
+import { getPalettes } from "../../network/common-requests";
 import { useQuery } from "react-query";
 
 export interface PaletteSorterParams {
@@ -17,6 +17,7 @@ export interface PaletteSorterParams {
   orderOptions: Array<Option>;
   sortOptions: Array<Option>;
   setPalettes: React.Dispatch<React.SetStateAction<Array<ColorPalette>>>;
+  setParams: React.Dispatch<React.SetStateAction<Object>>;
 }
 
 export default function PaletteSorter({
@@ -24,8 +25,9 @@ export default function PaletteSorter({
   orderOptions,
   sortOptions,
   setPalettes,
+  setParams,
 }: PaletteSorterParams) {
-  const [orderBy, setOrderBy] = React.useState<string>("");
+  const [order, setOrder] = React.useState<string>("");
   const [sortBy, setSortBy] = React.useState<string>("");
   const [sortValue, setSortValue] = React.useState<string>("");
   const [inputType, setInputType] = React.useState<string>("text");
@@ -34,13 +36,16 @@ export default function PaletteSorter({
   let route = routeBase;
 
   const { isLoading, isFetching, error, refetch } = useQuery(
-    "repoData",
-    () =>
+    "sortPalettes",
+    () => {
+      setParams({ order, sortBy, sortValue });
       getPalettes({
         route: route,
         setPalettes: setPalettes,
-      }),
-    { enabled: false }
+        params: { order, sortBy, sortValue },
+      });
+    },
+    { refetchOnWindowFocus: false, enabled: false }
   );
 
   if (error) {
@@ -51,24 +56,13 @@ export default function PaletteSorter({
     });
   }
 
-  async function updatePalettes() {
-    if (orderBy === "" && sortBy === "") return;
-    route = routeBase;
-    if (orderBy !== "") route = route + "order=" + orderBy;
-    if (sortBy !== "") {
-      if (orderBy !== "") route = route + "&";
-      route = route + "sortBy=" + sortBy + "&sortValue=" + sortValue;
-    }
-    refetch();
-  }
-
   return (
     <HStack h="55px" fontSize="l" ml={5} mr={5} spacing={2}>
       <Text fontWeight="bold">Order by:</Text>
       <Select
         variant="filled"
         defaultValue=""
-        onChange={(e) => setOrderBy(e.target.value)}
+        onChange={(e) => setOrder(e.target.value)}
         w="200px"
       >
         <option value="">Default</option>
@@ -115,7 +109,7 @@ export default function PaletteSorter({
       <Button
         colorScheme="purple"
         isLoading={isLoading || isFetching}
-        onClick={() => updatePalettes()}
+        onClick={() => refetch()}
       >
         Apply
       </Button>

@@ -43,13 +43,12 @@ export default function ToolBar({ userId, colors, setColors }: ToolBarParams) {
   const ref = React.useRef(null);
 
   const save = useMutation(
-    () => {
-      return axios.post(targetApiUrl + "/colorpalettes/", {
+    () =>
+      axios.post(targetApiUrl + "/colorpalettes/", {
         name: paletteName,
         colors: JSON.stringify(colors),
         creatorId: userId,
-      });
-    },
+      }),
     {
       onSuccess: () => {
         onClose();
@@ -100,7 +99,7 @@ export default function ToolBar({ userId, colors, setColors }: ToolBarParams) {
           <Spacer />
           <Center>
             <Button colorScheme="purple" onClick={onOpen}>
-              Save & share
+              Share
             </Button>
           </Center>
           <Modal
@@ -113,12 +112,14 @@ export default function ToolBar({ userId, colors, setColors }: ToolBarParams) {
           >
             <ModalOverlay />
             <ModalContent>
-              <ModalHeader>Name your palette:</ModalHeader>
+              <ModalHeader>Share your palette</ModalHeader>
               <ModalCloseButton />
               <Divider />
               <ModalBody>
                 <FormControl>
-                  <FormLabel htmlFor="name">Enter the name here:</FormLabel>
+                  <FormLabel htmlFor="name">
+                    Give a name to your palette:
+                  </FormLabel>
                   <Input
                     ref={ref}
                     id="name"
@@ -147,7 +148,7 @@ export default function ToolBar({ userId, colors, setColors }: ToolBarParams) {
                       Cancel
                     </Button>
                     <Button colorScheme="purple" onClick={savePalette}>
-                      Save
+                      Share
                     </Button>
                   </>
                 )}
